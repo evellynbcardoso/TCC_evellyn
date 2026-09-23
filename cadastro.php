@@ -39,7 +39,19 @@
             name="senha"
             placeholder="Digite a sua senha "
             required >
+
+            <button type="submit" class="btn btn-full">
+                Criar minha conta ✨
+            </button>
         </form>
+
+        <p link= "link-text">
+            Ja possui uma conta
+        </p>
+
+        <a href="login.php">
+            Fazer login
+        </a>
     </div>
 </body>
 </html>

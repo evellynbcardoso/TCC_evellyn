@@ -69,6 +69,36 @@ $daods = $usuario->buscarPorId(
         </div>
     </section>
 
-    
+    <h2 class="section-title">
+        Escolha seu desafio 🧠
+    </h2>
+
+    <section class="games">
+        <a href="exercicio.php?tipo=inteiros" class="game-card">
+            <div class="game-ido">
+                🔢
+            </div>
+
+            <h3>
+                Numeros inteiros
+            </h3>
+
+            <p>Aprenda trabalhar co numeros possitivos e negativos</p>
+
+            <span>Jogar → </span>
+        </a>
+
+        <a href="exercicio.php?tipo=equacoes" class="game-card">
+            <div class="game-ido">
+                📐
+            </div>
+
+            <h3>Equações</h3>
+
+            <p>Resolva desafios e contontre o valor do X</p>
+
+            <span>Jogar → </span>
+        </a>
+    </section>
 </body>
 </html>

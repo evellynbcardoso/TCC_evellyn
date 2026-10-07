@@ -1,104 +1,224 @@
 <?php
 
-// PAINEL DO ALUNO
 session_start();
-require_once "classes/usuario.php";
 
-// Verifica se está logado
-if(!isset($_SESSION["usuario_id"])){
-    header ("Location: login.php");
+if (!isset($_SESSION["usuario_id"])) {
+
+    header("Location: login.php");
     exit;
 }
 
-$usuario = new usuario();
-$daods = $usuario->buscarPorId(
-    $_SESSION["usuario_id"]
-);
+require_once "config/Banco.php";
+require_once "classes/Usuario.php";
+require_once "classes/Questao.php";
+
+$banco = new Banco();
+
+$db = $banco->getConexao();
+
+$usuarioObj =
+    new Usuario($db);
+
+$questaoObj =
+    new Questao($db);
+
+$usuario =
+    $usuarioObj->buscarPorId(
+        (int)$_SESSION["usuario_id"]
+    );
+
+if (!$usuario) {
+
+    session_destroy();
+
+    header("Location: login.php");
+
+    exit;
+}
+
+$inteiros =
+    $questaoObj->listarPorTema(
+        "inteiros"
+    );
+
+$equacoes =
+    $questaoObj->listarPorTema(
+        "equacoes"
+    );
+
+$totalQuestoes =
+    count($inteiros) +
+    count($equacoes);
+
 ?>
 
 <!DOCTYPE html>
-<html lang="pt-br">
+
+<html lang="pt-BR">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel</title>
-    <link rel="stylesheet" href="css/style.css">
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Dashboard - MathPlay</title>
+
+<link
+    rel="stylesheet"
+    href="css/style.css"
+>
+
 </head>
+
 <body>
-    <header class="menu">
-        <h1> 🎮 Mathplay</h1>
+
+<header class="topo">
+
+    <div class="logo">
+        📚 Math<span>Play</span>
+    </div>
+
+    <div>
+
+        Olá,
+        <strong>
+            <?= htmlspecialchars($usuario["nome"]) ?>
+        </strong>
+
+        <a
+            href="logout.php"
+            class="sair"
+        >
+            Sair
+        </a>
+
+    </div>
+
+</header>
+
+<main class="dashboard">
+
+    <section class="boas-vindas">
+
         <div>
-            <span class="usuario">
-                👋 <?=htmlspecialchars($dados["nome"])?>
+
+            <span class="badge">
+                Nível <?= $usuario["nivel"] ?>
             </span>
-            <a href="logout.php"
-            class="btn btn-outline">
-                Sair
-            </a>
-        </div>
-    </header>
 
-    <section class="welcome">
-        <h2>
-            Olá
-            <?=htmlspecialchars($dados["nome"])?> !👋
-        </h2>
-        <p>
-            Pronto para aprender Matemática
-        </p>
+            <h1>
+                Olá,
+                <?= htmlspecialchars($usuario["nome"]) ?>! 👋
+            </h1>
+
+            <p>
+                Escolha um desafio para começar.
+            </p>
+
+        </div>
+
+        <div class="xp">
+            ⭐ <?= $usuario["xp"] ?> XP
+        </div>
+
     </section>
 
-    <section class="stats">
-        <div class="stat-card">
-            <span>⭐</span>
-            <div>
-                <small>XP</small>
-                <strong>
-                    <?= $dados["xp"]?>
-                </strong>
-            </div>
+    <section class="estatisticas">
+
+        <div>
+            ⭐
+            <strong>
+                <?= $usuario["xp"] ?>
+            </strong>
+            <small>
+                XP
+            </small>
         </div>
-        <div class="stat-card">
-            <span>🏆</span>
-            <div>
-                <small>Nivel</small>
-                <strong>
-                    <?= $dados["nivel"]?>
-                </strong>
-            </div>
+
+        <div>
+            🏆
+            <strong>
+                <?= $usuario["nivel"] ?>
+            </strong>
+            <small>
+                Nível
+            </small>
         </div>
+
+        <div>
+            🧮
+            <strong>
+                <?= $totalQuestoes ?>
+            </strong>
+            <small>
+                Questões
+            </small>
+        </div>
+
     </section>
 
-    <h2 class="section-title">
-        Escolha seu desafio 🧠
+    <h2>
+        Escolha seu desafio 🎮
     </h2>
 
-    <section class="games">
-        <a href="exercicio.php?tipo=inteiros" class="game-card">
-            <div class="game-ido">
-                🔢
+    <section class="jogos">
+
+        <a
+            href="questoes/inteiros.php"
+            class="jogo"
+        >
+
+            <div class="icone">
+                ➕➖
             </div>
 
             <h3>
-                Numeros inteiros
+                Números Inteiros
             </h3>
 
-            <p>Aprenda trabalhar co numeros possitivos e negativos</p>
+            <p>
+                Pratique números positivos
+                e negativos.
+            </p>
 
-            <span>Jogar → </span>
+            <strong>
+                Começar →
+            </strong>
+
         </a>
 
-        <a href="exercicio.php?tipo=equacoes" class="game-card">
-            <div class="game-ido">
-                📐
+        <a
+            href="questoes/equacoes.php"
+            class="jogo"
+        >
+
+            <div class="icone">
+                ✏️
             </div>
 
-            <h3>Equações</h3>
+            <h3>
+                Equações
+            </h3>
 
-            <p>Resolva desafios e contontre o valor do X</p>
+            <p>
+                Descubra o valor de X
+                resolvendo equações.
+            </p>
 
-            <span>Jogar → </span>
+            <strong>
+                Começar →
+            </strong>
+
         </a>
+
     </section>
+
+</main>
+
 </body>
+
 </html>

@@ -1,61 +1,54 @@
 <?php
 
-require_once "banco.php";
+class Questao
+{
+    private PDO $db;
 
-// CLASSE QUESTAO
-// Responsável pelas questões matemáticas
-class questao{
-    private PDO $banco;
-
-    public function __construct(){
-        $conexao = new banco();
-        $this-> banco = $conexao->getConexao();
+    public function __construct(PDO $db)
+    {
+        $this->db = $db;
     }
 
-// BUSCAR UMA QUESTÃO
-    public function buscarQuestao(strip $tipo): ?array{
-        $sql= "SELECT * FROM  questoes
-        WHERE tipo = :tipo
-        ORDER BY RAND()
-        LIMIT 1";
+    // Lista questões de determinado tema
+    public function listarPorTema(
+        string $tema
+    ): array {
 
-        $comando = $this->banco->prepare($sql);
-        $comando->execute([
-            ":id" = $id
+        $sql = "
+            SELECT *
+            FROM questoes
+            WHERE tema = ?
+            ORDER BY id
+        ";
+
+        $stmt = $this->db->prepare($sql);
+
+        $stmt->execute([
+            $tema
         ]);
 
-        $questao = $comando->fetch(PDO :: FETCH_ASSOC);
-        return $questao ? : null;
+        return $stmt->fetchAll();
     }
 
-// REGISTRAR RESPOSTA
-    public function registrarResposta(
-        int $usuarioId,
-        int $questaoId,
-        string $resposta,
-        bool $acertou,
-        int $xp
-    ): void{
-        $sql = "INSERT INTO respostas(
-        usuario_id,
-        questao_id,
-        resposta_usuario,
-        acertou,
-        xp_guanho )
-        VALUES (
-        :usuario,
-        :questao,
-        :resposta,
-        :acertou,
-        :xp )";
+    // Busca uma questão específica
+    public function buscarPorId(
+        int $id
+    ): ?array {
 
-        $comando =$this->banco->prepare($sql);
-        $comando->execute([
-            ":usuario" => $usuario,
-            ":questao" => $questao,
-            ":resposta" => $resposta,
-            ":acertou" => $acertou
-            ":xp" => $xp
+        $sql = "
+            SELECT *
+            FROM questoes
+            WHERE id = ?
+        ";
+
+        $stmt = $this->db->prepare($sql);
+
+        $stmt->execute([
+            $id
         ]);
+
+        $questao = $stmt->fetch();
+
+        return $questao ?: null;
     }
 }

@@ -1,149 +1,111 @@
 <?php
 
-require_once "Banco.php";
+class Usuario
+{
+    private PDO $db;
 
-// CLASSE USUARIO
-// Representa um aluno do sistema
-class Usuario{
-    private PDO $banco;
-
-    private int $id;
-    private string $nome;
-    private string $email;
-    private string $senha;
-    private int $xp;
-    private int $nivel;
-
-    // CONSTRUTOR
-    public function __construct()
+    public function __construct(PDO $db)
     {
-        // Criamos nossa conexão
-        $conexao = new Banco();
-
-        $this->banco = $conexao->getConexao();
+        $this->db = $db;
     }
 
-    // CADASTRAR USUÁRIO
+    // Cadastra um novo usuário
     public function cadastrar(
         string $nome,
         string $email,
         string $senha
     ): bool {
 
-        // Criptografa a senha
-        $senhaSegura = password_hash(
+        $senhaHash = password_hash(
             $senha,
             PASSWORD_DEFAULT
         );
 
-        // SQL para inserir usuário
-        $sql = "INSERT INTO usuarios
-                (nome, email, senha)
-                VALUES
-                (:nome, :email, :senha)";
+        $sql = "
+            INSERT INTO usuarios
+            (nome, email, senha, xp, nivel)
+            VALUES (?, ?, ?, 0, 1)
+        ";
 
-        $comando = $this->banco->prepare($sql);
+        $stmt = $this->db->prepare($sql);
 
-        // Executa o cadastro
-        return $comando->execute([
-            ":nome" => $nome,
-            ":email" => $email,
-            ":senha" => $senhaSegura
+        return $stmt->execute([
+            $nome,
+            strtolower($email),
+            $senhaHash
         ]);
     }
 
-    // LOGIN
-    public function login(
-        string $email,
-        string $senha
-    ): bool {
-
-        $sql = "SELECT * FROM usuarios
-                WHERE email = :email";
-
-        $comando = $this->banco->prepare($sql);
-
-        $comando->execute([
-            ":email" => $email
-        ]);
-
-        $usuario = $comando->fetch(PDO::FETCH_ASSOC);
-
-        // Verifica se encontrou o usuário
-        // e se a senha está correta
-        if (
-            $usuario &&
-            password_verify($senha, $usuario["senha"])
-        ) {
-
-            // Guarda os dados na sessão
-            $_SESSION["usuario_id"] = $usuario["id"];
-            $_SESSION["usuario_nome"] = $usuario["nome"];
-
-            return true;
-        }
-
-        return false;
-    }
-
-    // BUSCAR USUÁRIO
-    public function buscarPorId(int $id): ?array
+    // Procura usuário pelo e-mail
+    public function buscarPorEmail(string $email): ?array
     {
-        $sql = "SELECT * FROM usuarios
-                WHERE id = :id";
+        $sql = "
+            SELECT *
+            FROM usuarios
+            WHERE email = ?
+        ";
 
-        $comando = $this->banco->prepare($sql);
+        $stmt = $this->db->prepare($sql);
 
-        $comando->execute([
-            ":id" => $id
+        $stmt->execute([
+            strtolower($email)
         ]);
 
-        $usuario = $comando->fetch(PDO::FETCH_ASSOC);
+        $usuario = $stmt->fetch();
 
         return $usuario ?: null;
     }
 
-    // ADICIONAR XP
+    // Procura usuário pelo ID
+    public function buscarPorId(int $id): ?array
+    {
+        $sql = "
+            SELECT *
+            FROM usuarios
+            WHERE id = ?
+        ";
+
+        $stmt = $this->db->prepare($sql);
+
+        $stmt->execute([$id]);
+
+        $usuario = $stmt->fetch();
+
+        return $usuario ?: null;
+    }
+
+    // Adiciona XP
     public function adicionarXP(
         int $id,
         int $xp
     ): void {
 
-        // Primeiro pegamos o usuário
         $usuario = $this->buscarPorId($id);
 
         if (!$usuario) {
             return;
         }
 
-        // Calculamos o novo XP
         $novoXP = $usuario["xp"] + $xp;
 
-        // Calculamos o nível
-        $novoNivel = 1;
+        // A cada 100 XP sobe um nível
+        $novoNivel = intdiv(
+            $novoXP,
+            100
+        ) + 1;
 
-        if ($novoXP >= 700) {
-            $novoNivel = 5;
-        } elseif ($novoXP >= 450) {
-            $novoNivel = 4;
-        } elseif ($novoXP >= 250) {
-            $novoNivel = 3;
-        } elseif ($novoXP >= 100) {
-            $novoNivel = 2;
-        }
+        $sql = "
+            UPDATE usuarios
+            SET xp = ?, nivel = ?
+            WHERE id = ?
+        ";
 
-        // Atualiza banco
-        $sql = "UPDATE usuarios
-                SET xp = :xp,
-                    nivel = :nivel
-                WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
 
-        $comando = $this->banco->prepare($sql);
-
-        $comando->execute([
-            ":xp" => $novoXP,
-            ":nivel" => $novoNivel,
-            ":id" => $id
+        $stmt->execute([
+            $novoXP,
+            $novoNivel,
+            $id
         ]);
     }
 }

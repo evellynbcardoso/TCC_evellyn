@@ -1,57 +1,131 @@
 <?php
-// PÁGINA INICIAL DO MATHPLAY
+
+session_start();
+
+if (isset($_SESSION["usuario_id"])) {
+
+    header("Location: dashboard.php");
+    exit;
+}
+
 ?>
 
 <!DOCTYPE html>
-<html lang="pt-br">
+
+<html lang="pt-BR">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aprenda Matemática</title>
-    <link rel="stylesheet" href="css/style.css">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>MathPlay</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
 </head>
+
 <body>
-    <header class="menu">
-        <h1>🎮 MathPlay</h1>
 
-        <div>
-                <a href="login.php" class="btn btn-outline">
-                    Entrar
-                </a>
+<header class="topo">
 
-                <a href="cadastro.php" class="btn">
-                 Criar Conta
-                </a>
-        </div>
-    </header>
-     
-    <main class="hero">
-        <div class="hero-text">
-            <span class="badge">
-                🚀 Aprenda jogando
-            </span>
-            <h2>Matemática pode ser </h2>
+    <div class="logo">
+        📚 Math<span>Play</span>
+    </div>
+
+    <nav>
+
+        <a href="login.php">
+            Entrar
+        </a>
+
+        <a
+            href="cadastro.php"
+            class="btn pequeno"
+        >
+            Criar conta
+        </a>
+
+    </nav>
+
+</header>
+
+<main class="hero">
+
+    <section>
+
+        <span class="badge">
+            🎮 Aprenda matemática brincando
+        </span>
+
+        <h1>
+            Matemática pode ser
             <span>divertida!</span>
-            <p>
-                Resolva os desafios, ganhe xp, suba de nivel e 
-                descubra que a matemática também pode ser uma aventura!
-            </p>
-            <a href="cadastro.php" class="btn btn-large">
+        </h1>
+
+        <p>
+            Resolva desafios, ganhe XP,
+            suba de nível e aprenda matemática
+            de uma maneira mais divertida.
+        </p>
+
+        <div class="acoes">
+
+            <a
+                href="cadastro.php"
+                class="btn"
+            >
                 Começar agora 🚀
             </a>
+
+            <a
+                href="login.php"
+                class="btn secundario"
+            >
+                Entrar
+            </a>
+
         </div>
 
-        <div class="hero-card">
-            <div class="emoji"> 🧠 </div>
-            <h3>Desafio Matemático</h3>
-            <p>Resolva questões e conquiste xp! </p>
-            <div class="xp-bar">
-                <div></div>
-            </div>
-            <strong>
-                ⭐ 80 XP
-            </strong>
+    </section>
+
+    <section class="home-cards">
+
+        <div class="info-card">
+            ➕➖
+            <strong>Números Inteiros</strong>
+            <small>
+                Aprenda positivos e negativos.
+            </small>
         </div>
-    </main>
+
+        <div class="info-card">
+            ✏️
+            <strong>Equações</strong>
+            <small>
+                Descubra o valor de X.
+            </small>
+        </div>
+
+        <div class="info-card">
+            ⭐
+            <strong>Ganhe XP</strong>
+            <small>
+                Acerte questões e suba de nível.
+            </small>
+        </div>
+
+    </section>
+
+</main>
+
 </body>
+
 </html>

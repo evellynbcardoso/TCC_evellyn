@@ -14,7 +14,7 @@ class Banco
         try {
 
             $this->conexao = new PDO(
-                "mysql:host={$this->host};dbname={$this->banco};charset=utf8mb4",
+                "mysql:host={$this->host};port=3308;dbname={$this->banco};charset=utf8mb4",
                 $this->usuario,
                 $this->senha
             );

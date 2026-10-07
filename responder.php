@@ -25,11 +25,13 @@ $resposta =  $_POST["resposta"];
 $usuarioId = $_SESSION["usuario_id"];
 
 // BUSCA A QUESTÃO
-$questoes = new Queatão();
-$questoes = $questoes-> buscarPorId("questao_id");
+$questoes = new Questao();
 
-if(!$questao){
-    die("Questão não encontrada ");
+$questao = $questoes->buscarPorId($questaoId);
+
+if (!$questao) {
+
+    die("Questão não encontrada.");
 }
 
 // VERIFICA SE ACERTOU

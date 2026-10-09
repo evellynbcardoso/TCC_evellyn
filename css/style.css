@@ -1,540 +1,896 @@
+/* RESET GLOBAL
+   Aplica regras básicas a todos os elementos da página.*/
 * {
+    /* Inclui bordas e preenchimentos no tamanho total
+       dos elementos, facilitando o controle do layout. */
     box-sizing: border-box;
+
+    /* Remove as margens padrão dos elementos. */
     margin: 0;
+
+    /* Remove os preenchimentos padrão dos elementos. */
     padding: 0;
 }
 
+/* VARIÁVEIS GLOBAIS
+   Armazena cores que podem ser reutilizadas no CSS.*/
+
 :root {
-    --azul: #4f46e5;
-    --roxo: #7c3aed;
-    --fundo: #f5f7ff;
-    --texto: #1f2937;
+    /* Cor principal roxa do sistema. */
+    --roxo1: #e559f1;
+
+    /* Segunda tonalidade de roxo. */
+    --roxo2: #bf54f1;
+
+    /* Cor de fundo das páginas. */
+    --fundo: #f0dbf9;
+
+    /* Cor principal dos textos. */
+    --texto: #000000;
+
+    /* Cor cinza utilizada em textos secundários. */
     --cinza: #6b7280;
+
+    /* Cor branca utilizada nos cartões e formulários. */
     --branco: #ffffff;
-    --verde: #16a34a;
-    --vermelho: #dc2626;
+
+    /* Cor verde para mensagens de sucesso. */
+    --verde: #06933a;
+
+    /* Cor vermelha para mensagens de erro. */
+    --vermelho: #de0000;
 }
 
+
+/* CONFIGURAÇÕES GERAIS DO CORPO DA PÁGINA
+   Define a fonte, o fundo e a cor dos textos.*/
+
 body {
+    /* Define a fonte padrão da página. */
     font-family: Arial, sans-serif;
+
+    /* Utiliza a cor de fundo definida nas variáveis. */
     background: var(--fundo);
+
+    /* Define a cor padrão dos textos. */
     color: var(--texto);
+
+    /* Garante uma altura mínima igual à altura da tela. */
     min-height: 100vh;
 }
 
+
+/* LINKS
+   Define a aparência padrão dos links. */
+
 a {
-    color: var(--azul);
+    /* Define a cor dos links. */
+    color: var(--roxo1);
+
+    /* Remove o sublinhado padrão dos links. */
     text-decoration: none;
 }
 
-.topo {
-    height: 72px;
-    background: white;
-    border-bottom: 1px solid #e5e7eb;
 
+/* CABEÇALHO DO SITE
+   Organiza a logo e o menu de navegação.*/
+
+.topo {
+    /* Define a altura do cabeçalho. */
+    height: 72px;
+
+    /* Define o fundo branco do cabeçalho. */
+    background: rgb(255, 255, 255);
+
+    /* Adiciona uma linha discreta na parte inferior. */
+    border-bottom: 1px solid #f9f9f9;
+
+    /* Ativa o Flexbox para organizar os elementos. */
     display: flex;
+
+    /* Centraliza os elementos verticalmente. */
     align-items: center;
+
+    /* Separa a logo e o menu nas extremidades. */
     justify-content: space-between;
 
+    /* Adiciona espaçamento nas laterais do cabeçalho. */
     padding: 0 6%;
 }
 
+
+/* LOGO DO MATHPLAY
+   Define o tamanho, o peso e a cor da logo textual */
+
 .logo {
+    /* Define o tamanho do texto da logo. */
     font-size: 25px;
+
+    /* Deixa o texto em negrito. */
     font-weight: bold;
-    color: #312e81;
+
+    /* Define a cor da logo. */
+    color: #b530d6;
 }
 
+/* Destaca uma parte da logo com outra tonalidade. */
 .logo span {
-    color: var(--roxo);
+    color: var(--roxo2);
 }
+
+
+/* MENU DE NAVEGAÇÃO
+   Organiza os links e botões do cabeçalho.*/
 
 .topo nav {
+    /* Organiza os elementos horizontalmente. */
     display: flex;
+
+    /* Centraliza os elementos verticalmente. */
     align-items: center;
+
+    /* Define o espaço entre os elementos do menu. */
     gap: 20px;
 }
 
+
+/* BOTÕES PRINCIPAIS
+   Define a aparência padrão dos botões do sistema. */
+
 .btn {
+    /* Permite que o elemento tenha comportamento
+       de bloco, mantendo a possibilidade de ficar
+       ao lado de outros elementos. */
     display: inline-block;
 
+    /* Remove a borda padrão do botão. */
     border: none;
 
+    /* Cria um degradê com duas tonalidades de roxo. */
     background:
         linear-gradient(
             135deg,
-            var(--azul),
-            var(--roxo)
+            var(--roxo1),
+            var(--roxo2)
         );
 
+    /* Define a cor do texto do botão. */
     color: white;
 
+    /* Adiciona espaço interno ao botão. */
     padding: 14px 22px;
 
+    /* Arredonda os cantos do botão. */
     border-radius: 12px;
 
+    /* Deixa o texto em negrito. */
     font-weight: bold;
 
+    /* Mostra o cursor de mão ao passar sobre o botão. */
     cursor: pointer;
 
+    /* Centraliza o texto dentro do botão. */
     text-align: center;
 }
 
+/* Altera levemente a transparência ao passar o mouse. */
 .btn:hover {
     opacity: .9;
 }
 
+/* Cria uma versão menor do botão principal. */
 .btn.pequeno {
     padding: 10px 16px;
 }
 
+/* Define a aparência alternativa dos botões. */
 .btn.secundario {
-    background: white;
-    color: var(--azul);
-    border: 1px solid #c7d2fe;
+    /* Fundo lilás claro. */
+    background: rgb(227, 200, 250);
+
+    /* Texto roxo. */
+    color: var(--roxo1);
+
+    /* Borda roxa. */
+    border: 1px solid var(--roxo2);
 }
 
+/* Faz o elemento ocupar toda a largura disponível. */
 .full {
     width: 100%;
 }
 
+
+/* SEÇÃO PRINCIPAL DA PÁGINA INICIAL
+   Organiza o texto de apresentação e os cartões. */
+
 .hero {
+    /* Limita a largura máxima do conteúdo. */
     max-width: 1150px;
 
+    /* Ocupa, no mínimo, a altura da tela menos o topo. */
     min-height:
         calc(100vh - 72px);
 
+    /* Centraliza a seção horizontalmente. */
     margin: auto;
 
+    /* Adiciona espaço interno na seção. */
     padding: 70px 25px;
 
+    /* Utiliza CSS Grid para organizar as colunas. */
     display: grid;
 
+    /* Define duas colunas com proporções diferentes. */
     grid-template-columns:
         1.1fr .9fr;
 
+    /* Centraliza os conteúdos verticalmente. */
     align-items: center;
 
+    /* Define a distância entre as colunas. */
     gap: 50px;
 }
 
+
+/* ETIQUETA OU SELO DE DESTAQUE
+   Utilizado para destacar uma informação na página.*/
+
 .badge {
+    /* Permite controlar o espaço interno do selo. */
     display: inline-block;
 
+    /* Define um fundo lilás claro. */
     background: #ede9fe;
 
-    color: var(--roxo);
+    /* Define a cor do texto. */
+    color: var(--roxo1);
 
+    /* Deixa o selo arredondado. */
     border-radius: 50px;
 
+    /* Adiciona espaço interno. */
     padding: 8px 15px;
 
+    /* Deixa o texto em negrito. */
     font-weight: bold;
 }
 
+
+/* TÍTULO PRINCIPAL DA PÁGINA INICIAL */
+
 .hero h1 {
+    /* Define o tamanho grande do título. */
     font-size: 58px;
+
+    /* Ajusta a altura das linhas do título. */
     line-height: 1.1;
 
+    /* Adiciona margens acima e abaixo. */
     margin: 20px 0;
 }
 
+/* Destaca uma parte do título com a cor roxa. */
 .hero h1 span {
-    color: var(--roxo);
+    color: var(--roxo2);
 }
 
+
+/* PARÁGRAFOS DA SEÇÃO PRINCIPAL */
+
 .hero p {
+    /* Utiliza cinza nos textos explicativos. */
     color: var(--cinza);
 
+    /* Define o tamanho da fonte. */
     font-size: 19px;
 
+    /* Melhora o espaçamento entre as linhas. */
     line-height: 1.7;
 
+    /* Limita a largura do parágrafo. */
     max-width: 600px;
 }
 
+
+/* GRUPO DE BOTÕES DA PÁGINA INICIAL */
+
 .acoes {
+    /* Organiza os botões com Flexbox. */
     display: flex;
 
+    /* Define o espaço entre os botões. */
     gap: 12px;
 
+    /* Adiciona espaço acima dos botões. */
     margin-top: 30px;
 
+    /* Permite que os botões quebrem de linha
+       se não houver espaço suficiente. */
     flex-wrap: wrap;
 }
 
+
+/* CARTÕES INFORMATIVOS DA PÁGINA INICIAL */
+
 .home-cards {
+    /* Organiza os cartões em uma grade vertical. */
     display: grid;
+
+    /* Define o espaço entre os cartões. */
     gap: 18px;
 }
 
 .info-card {
+    /* Define o fundo branco do cartão. */
     background: white;
 
+    /* Adiciona espaço interno. */
     padding: 25px;
 
+    /* Arredonda os cantos. */
     border-radius: 20px;
 
+    /* Adiciona uma sombra suave ao cartão. */
     box-shadow:
         0 10px 30px
         rgba(0,0,0,.06);
 
+    /* Define o tamanho padrão dos elementos textuais
+       dentro do cartão, salvo regras mais específicas. */
     font-size: 35px;
 }
 
+/* Faz os elementos strong e small ficarem em linhas
+   separadas dentro dos cartões. */
 .info-card strong,
 .info-card small {
     display: block;
 }
 
+/* Estiliza os textos em destaque dos cartões. */
 .info-card strong {
     font-size: 20px;
     margin-top: 8px;
 }
 
+/* Estiliza os textos secundários dos cartões. */
 .info-card small {
     font-size: 14px;
     color: var(--cinza);
     margin-top: 5px;
 }
 
+
+/* PÁGINAS DE FORMULÁRIO
+   Centraliza os formulários na página.*/
+
 .pagina-form {
+    /* Utiliza Flexbox para organizar o formulário. */
     display: flex;
 
+    /* Centraliza verticalmente o conteúdo. */
     align-items: center;
 
+    /* Centraliza horizontalmente o conteúdo. */
     justify-content: center;
 
+    /* Evita que o formulário fique colado às bordas. */
     padding: 25px;
 }
 
+
+/* CARTÃO DO FORMULÁRIO
+   Utilizado nas telas de cadastro e login. */
+
 .formulario {
+    /* Permite que o formulário se adapte à tela. */
     width: 100%;
+
+    /* Limita a largura máxima do formulário. */
     max-width: 450px;
 
+    /* Define o fundo branco. */
     background: white;
 
+    /* Adiciona espaço interno. */
     padding: 35px;
 
+    /* Arredonda os cantos do formulário. */
     border-radius: 22px;
 
+    /* Adiciona uma sombra suave. */
     box-shadow:
         0 15px 40px
         rgba(0,0,0,.08);
 }
 
+/* Define o espaçamento da logo dentro do formulário. */
 .formulario .logo {
     margin: 25px 0 15px;
 }
 
+/* Adiciona espaço abaixo do título do formulário. */
 .formulario h1 {
     margin-bottom: 8px;
 }
 
+/* Define a cor dos parágrafos do formulário. */
 .formulario p {
     color: var(--cinza);
 }
 
+
+/* RÓTULOS DOS CAMPOS
+   Estiliza os textos que identificam os campos. */
+
 .formulario label {
+    /* Faz cada rótulo ocupar sua própria linha. */
     display: block;
 
+    /* Deixa o rótulo em negrito. */
     font-weight: bold;
 
+    /* Adiciona espaço acima do rótulo. */
     margin-top: 18px;
 
+    /* Adiciona espaço abaixo do rótulo. */
     margin-bottom: 7px;
 }
 
+
+/* CAMPOS DE ENTRADA
+   Estiliza os campos dos formulários e de respostas. */
+
 .formulario input,
 .resposta {
+    /* Faz o campo ocupar toda a largura disponível. */
     width: 100%;
 
+    /* Adiciona espaço interno para facilitar a digitação. */
     padding: 14px;
 
+    /* Define uma borda cinza clara. */
     border: 1px solid #d1d5db;
 
+    /* Arredonda os cantos dos campos. */
     border-radius: 10px;
 
+    /* Define o tamanho do texto digitado. */
     font-size: 16px;
 
+    /* Remove o contorno padrão do navegador. */
     outline: none;
 }
 
+
+/* EFEITO DE FOCO DOS CAMPOS
+   Aplica um destaque quando o campo é selecionado. */
+
 .formulario input:focus,
 .resposta:focus {
+    /* Altera a cor da borda durante a digitação.
+       ATENÇÃO: --azul não está definida em :root. */
     border-color: var(--azul);
 
+    /* Adiciona uma sombra azul clara ao redor do campo. */
     box-shadow:
         0 0 0 3px #e0e7ff;
 }
 
+/* Adiciona espaço acima do botão do formulário. */
 .formulario .btn {
     margin-top: 22px;
 }
 
+
+/* MENSAGEM DE ERRO
+   Utilizada para informar que ocorreu um problema. */
+
 .erro {
+    /* Fundo vermelho claro. */
     background: #fee2e2;
 
+    /* Texto vermelho escuro. */
     color: #991b1b;
 
+    /* Espaço interno da mensagem. */
     padding: 12px;
 
+    /* Cantos arredondados. */
     border-radius: 10px;
 
+    /* Espaço acima da mensagem. */
     margin-top: 15px;
 }
+
+
+/* MENSAGEM DE SUCESSO
+   Utilizada para confirmar uma operação. */
 
 .sucesso {
+    /* Fundo verde claro. */
     background: #dcfce7;
 
+    /* Texto verde escuro. */
     color: #166534;
 
+    /* Espaço interno da mensagem. */
     padding: 12px;
 
+    /* Cantos arredondados. */
     border-radius: 10px;
 
+    /* Espaço acima da mensagem. */
     margin-top: 15px;
 }
 
+
+/* CONTEÚDO CENTRALIZADO */
+
 .centralizado {
+    /* Centraliza o texto horizontalmente. */
     text-align: center;
 
+    /* Adiciona espaço acima do conteúdo. */
     margin-top: 20px;
 }
 
+/* Destaca os links do conteúdo centralizado. */
 .centralizado a {
     font-weight: bold;
 }
 
+
+/* PAINEL DO ALUNO
+   Define a área principal do dashboard do MathPlay. */
+
 .dashboard {
+    /* Utiliza até 1100px de largura, respeitando
+       92% da largura disponível na tela. */
     width: min(1100px, 92%);
 
+    /* Centraliza o painel e adiciona espaço vertical. */
     margin: 45px auto;
 }
 
+
+/* SEÇÃO DE BOAS-VINDAS
+   Organiza a mensagem de boas-vindas e o XP do aluno. */
+
 .boas-vindas {
+    /* Ativa o Flexbox. */
     display: flex;
 
+    /* Separa os elementos horizontalmente. */
     justify-content: space-between;
 
+    /* Alinha os elementos verticalmente. */
     align-items: center;
 
+    /* Define a distância entre os elementos. */
     gap: 20px;
 
+    /* Adiciona espaço abaixo da seção. */
     margin-bottom: 30px;
 }
 
+/* Estiliza o título de boas-vindas. */
 .boas-vindas h1 {
     font-size: 36px;
-
     margin: 12px 0 5px;
 }
 
+/* Define a cor dos textos secundários. */
 .boas-vindas p {
     color: var(--cinza);
 }
 
+
+/* CARTÃO DE XP
+   Exibe os pontos de experiência do aluno. */
+
 .xp {
+    /* Fundo branco. */
     background: white;
 
+    /* Espaço interno do cartão. */
     padding: 18px 25px;
 
+    /* Cantos arredondados. */
     border-radius: 15px;
 
+    /* Texto em negrito. */
     font-weight: bold;
 }
 
+
+/* ESTATÍSTICAS DO ALUNO
+   Organiza cartões com informações de desempenho.*/
+
 .estatisticas {
+    /* Cria uma grade de três colunas. */
     display: grid;
 
+    /* Distribui as três colunas igualmente. */
     grid-template-columns:
         repeat(3, 1fr);
 
+    /* Espaço entre os cartões. */
     gap: 18px;
 
+    /* Espaço abaixo das estatísticas. */
     margin-bottom: 40px;
 }
 
+/* Estiliza cada cartão de estatística. */
 .estatisticas div {
     background: white;
-
     padding: 25px;
-
     border-radius: 18px;
 }
 
+/* Coloca os valores e textos secundários em linhas separadas. */
 .estatisticas strong,
 .estatisticas small {
     display: block;
 }
 
+/* Destaca os valores das estatísticas. */
 .estatisticas strong {
     font-size: 28px;
-
     margin: 8px 0;
 }
 
+/* Estiliza os textos secundários das estatísticas. */
 .estatisticas small {
     color: var(--cinza);
 }
 
+
+/* GRADE DE JOGOS MATEMÁTICOS
+   Organiza os cartões dos jogos disponíveis.*/
+
 .jogos {
+    /* Ativa o CSS Grid. */
     display: grid;
 
+    /* Cria duas colunas de mesma largura. */
     grid-template-columns:
         repeat(2, 1fr);
 
+    /* Define o espaço entre os jogos. */
     gap: 20px;
 
+    /* Adiciona espaço acima da grade. */
     margin-top: 20px;
 }
 
+
+/* CARTÃO INDIVIDUAL DE JOGO
+   Define o visual de cada desafio matemático. */
+
 .jogo {
+    /* Fundo branco do cartão. */
     background: white;
 
+    /* Espaço interno. */
     padding: 30px;
 
+    /* Arredonda os cantos. */
     border-radius: 20px;
 
+    /* Adiciona sombra suave. */
     box-shadow:
         0 10px 30px
         rgba(0,0,0,.06);
 
+    /* Cria uma transição suave para os efeitos. */
     transition: .2s;
 }
 
+/* Move levemente o cartão para cima ao passar o mouse. */
 .jogo:hover {
     transform: translateY(-4px);
 }
 
+/* Define o tamanho dos ícones dos jogos. */
 .icone {
     font-size: 45px;
 }
 
+/* Estiliza o título de cada jogo. */
 .jogo h3 {
     color: var(--texto);
-
     margin: 15px 0 8px;
 }
 
+/* Estiliza a descrição de cada jogo. */
 .jogo p {
     color: var(--cinza);
 
+    /* Melhora a leitura do texto. */
     line-height: 1.5;
 
+    /* Espaço abaixo da descrição. */
     margin-bottom: 18px;
 }
 
+
+/* LINK OU BOTÃO DE SAIR*/
+
 .sair {
+    /* Adiciona espaço à esquerda. */
     margin-left: 15px;
 
+    /* Destaca o texto em negrito. */
     font-weight: bold;
 }
 
+
+/* PÁGINA DAS QUESTÕES
+   Define a largura e o posicionamento do conteúdo. */
+
 .questao-page {
+    /* Limita a largura a 750px ou 92% da tela. */
     width: min(750px, 92%);
 
+    /* Centraliza a página horizontalmente. */
     margin: 50px auto;
 }
 
+/* Adiciona espaçamento ao título da página de questões. */
 .questao-page h1 {
     margin: 15px 0 25px;
 }
 
+
+/* CARTÃO DA QUESTÃO
+   Apresenta o enunciado e o campo de resposta.*/
+
 .questao {
+    /* Fundo branco. */
     background: white;
 
+    /* Espaço interno do cartão. */
     padding: 35px;
 
+    /* Cantos arredondados. */
     border-radius: 22px;
 
+    /* Sombra suave. */
     box-shadow:
         0 12px 35px
         rgba(0,0,0,.07);
 }
 
+/* Estiliza o enunciado da questão. */
 .questao h2 {
+    /* Melhora a leitura quando o enunciado
+       ocupa mais de uma linha. */
     line-height: 1.5;
 
+    /* Adiciona espaço abaixo do enunciado. */
     margin-bottom: 25px;
 }
 
+
+/* CAMPO DE RESPOSTA
+   Adiciona espaçamento e aumenta o texto digitado.*/
+
 .resposta {
+    /* Espaço abaixo do campo de resposta. */
     margin-bottom: 15px;
 
+    /* Texto maior para facilitar a leitura. */
     font-size: 18px;
 }
 
+
+/* RESULTADO DA RESPOSTA
+   Define o espaço e o formato da mensagem de correção.*/
+
 .resultado {
+    /* Espaço interno da mensagem. */
     padding: 20px;
 
+    /* Cantos arredondados. */
     border-radius: 15px;
 
+    /* Espaço abaixo do resultado. */
     margin-bottom: 20px;
 }
 
+/* Estilo utilizado quando o aluno acerta a questão. */
 .certo {
     background: #dcfce7;
-
     color: #166534;
 }
 
+/* Estilo utilizado quando o aluno erra a questão. */
 .errado {
     background: #fee2e2;
-
     color: #991b1b;
 }
 
+
+/* EXPLICAÇÃO DA QUESTÃO
+   Exibe a resolução ou o motivo do erro. */
+
 .explicacao {
+    /* Fundo cinza claro para destacar a explicação. */
     background: #f3f4f6;
 
+    /* Espaço interno do bloco. */
     padding: 20px;
 
+    /* Cantos arredondados. */
     border-radius: 15px;
 
+    /* Espaço abaixo da explicação. */
     margin-bottom: 20px;
 }
 
+/* Adiciona espaço abaixo do título da explicação. */
 .explicacao h3 {
     margin-bottom: 8px;
 }
 
+/* Melhora o espaçamento entre as linhas explicativas. */
 .explicacao p {
     line-height: 1.6;
 }
 
+
+/* RESPONSIVIDADE PARA TELAS DE ATÉ 800px
+   Adapta o layout para tablets e telas menores. */
+
 @media (max-width: 800px) {
 
+    /* Coloca o conteúdo principal em uma única coluna. */
     .hero {
         grid-template-columns: 1fr;
     }
 
+    /* Reduz o tamanho do título principal. */
     .hero h1 {
         font-size: 45px;
     }
 
+    /* Organiza os jogos e as estatísticas em uma coluna. */
     .jogos,
     .estatisticas {
         grid-template-columns: 1fr;
     }
 
+    /* Organiza a seção de boas-vindas verticalmente. */
     .boas-vindas {
         flex-direction: column;
 
+        /* Alinha os elementos à esquerda. */
         align-items: flex-start;
     }
 }
 
+
+/*  RESPONSIVIDADE PARA TELAS DE ATÉ 500px
+   Faz ajustes específicos para celulares menores.*/
+
 @media (max-width: 500px) {
 
+    /* Reduz o espaçamento lateral do cabeçalho. */
     .topo {
         padding: 0 20px;
     }
 
+    /* Esconde o elemento de sair no cabeçalho
+       para liberar espaço em telas pequenas. */
     .topo .sair {
         display: none;
     }
 
+    /* Reduz o espaço interno dos formulários
+       e dos cartões de questões. */
     .formulario,
     .questao {
         padding: 25px;

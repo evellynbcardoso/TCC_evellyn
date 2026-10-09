@@ -102,7 +102,7 @@ if (isset($_SESSION["usuario_id"])) {
             ➕➖
             <strong>Números Inteiros</strong>
             <small>
-                Aprenda positivos e negativos.
+                Positivos e negativos.
             </small>
         </div>
 

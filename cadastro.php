@@ -1,178 +1,93 @@
-<?php
-
-session_start();
-
-require_once "config/Banco.php";
-require_once "classes/Usuario.php";
-
-$banco = new Banco();
-
-$db = $banco->getConexao();
-
-$usuario = new Usuario($db);
-
-$erro = "";
-
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
-    $nome = trim($_POST["nome"] ?? "");
-    $email = trim($_POST["email"] ?? "");
-    $senha = $_POST["senha"] ?? "";
-
-    if (
-        $nome === "" ||
-        $email === "" ||
-        $senha === ""
-    ) {
-
-        $erro = "Preencha todos os campos.";
-
-    } elseif (
-        !filter_var(
-            $email,
-            FILTER_VALIDATE_EMAIL
-        )
-    ) {
-
-        $erro = "Digite um e-mail válido.";
-
-    } elseif (
-        strlen($senha) < 6
-    ) {
-
-        $erro =
-            "A senha precisa ter pelo menos 6 caracteres.";
-
-    } elseif (
-        $usuario->buscarPorEmail($email)
-    ) {
-
-        $erro =
-            "Este e-mail já está cadastrado.";
-
-    } else {
-
-        $usuario->cadastrar(
-            $nome,
-            $email,
-            $senha
-        );
-
-        header(
-            "Location: login.php?cadastro=ok"
-        );
-
-        exit;
-    }
-}
-
-?>
-
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-<title>Criar conta - MathPlay</title>
+    <title>Criar conta - MathPlay</title>
 
-<link
-    rel="stylesheet"
-    href="css/style.css"
->
+    <link rel="stylesheet"
+          href="css/style.css">
 
 </head>
 
-<body class="pagina-form">
+<body class="center">
 
-<div class="formulario">
+    <div class="form-card">
 
-    <a href="index.php">
-        ← Voltar
-    </a>
-
-    <div class="logo">
-        📚 Math<span>Play</span>
-    </div>
-
-    <h1>
-        Criar sua conta 🚀
-    </h1>
-
-    <p>
-        Comece sua jornada matemática.
-    </p>
-
-    <?php if ($erro): ?>
-
-        <div class="erro">
-            <?= htmlspecialchars($erro) ?>
+        <div class="logo">
+            🎮 MathPlay
         </div>
 
-    <?php endif; ?>
+        <h2>
+            Criar sua conta 🚀
+        </h2>
 
-    <form method="POST">
+        <p>
+            Comece sua aventura matemática!
+        </p>
 
-        <label>
-            Nome
-        </label>
+        <form action="cadastrar.php"
+              method="POST">
 
-        <input
-            type="text"
-            name="nome"
-            placeholder="Digite seu nome"
-            required
-        >
+            <label>
+                Nome
+            </label>
 
-        <label>
-            E-mail
-        </label>
+            <input
+                type="text"
+                name="nome"
+                placeholder="Digite seu nome"
+                required
+            >
 
-        <input
-            type="email"
-            name="email"
-            placeholder="Digite seu e-mail"
-            required
-        >
+            <label>
+                E-mail
+            </label>
 
-        <label>
-            Senha
-        </label>
+            <input
+                type="email"
+                name="email"
+                placeholder="Digite seu e-mail"
+                required
+            >
 
-        <input
-            type="password"
-            name="senha"
-            placeholder="Mínimo 6 caracteres"
-            required
-        >
+            <label>
+                Senha
+            </label>
 
-        <button
-            type="submit"
-            class="btn full"
-        >
-            Criar conta 🚀
-        </button>
+            <input
+                type="password"
+                name="senha"
+                placeholder="Digite sua senha"
+                required
+            >
 
-    </form>
+            <button
+                type="submit"
+                class="btn btn-full">
 
-    <p class="centralizado">
+                Criar minha conta ✨
 
-        Já possui uma conta?
+            </button>
 
-        <a href="login.php">
-            Entrar
-        </a>
+        </form>
 
-    </p>
+        <p class="link-text">
 
-</div>
+            Já possui uma conta?
+
+            <a href="login.php">
+                Fazer login
+            </a>
+
+        </p>
+
+    </div>
 
 </body>
 

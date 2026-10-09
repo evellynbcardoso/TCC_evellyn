@@ -1,196 +1,168 @@
 <?php
 
+require_once "classes/banco.php";
+
+// =========================================================
 // CLASSE USUARIO
-// Responsável pelo cadastro, busca e gerenciamento
-// dos usuários, incluindo XP e níveis no MathPlay.
+// Representa um aluno do sistema
+// =========================================================
 
 class Usuario
 {
-    // Atributo privado que armazena a conexão com
-    // o banco de dados MySQL por meio do PDO.
-    private PDO $db;
+    private PDO $banco;
 
-    // CONSTRUTOR DA CLASSE
-    // É executado automaticamente ao criar um objeto
-    // da classe Usuario.
-    // Recebe a conexão com o banco de dados.
-    public function __construct(PDO $db)
+    private int $id;
+    private string $nome;
+    private string $email;
+    private string $senha;
+    private int $xp;
+    private int $nivel;
+
+    // =====================================================
+    // CONSTRUTOR
+    // =====================================================
+
+    public function __construct()
     {
-        // Armazena a conexão recebida para que os
-        // métodos da classe possam acessar o banco.
-        $this->db = $db;
+        // Criamos nossa conexão
+        $conexao = new Banco();
+
+        $this->banco = $conexao->getConexao();
     }
 
-    // MÉTODO CADASTRAR
-    // Cadastra um novo usuário no banco de dados.
-    // Parâmetros:
-    // $nome  = Nome do usuário.
-    // $email = E-mail do usuário.
-    // $senha = Senha informada no cadastro.
-    // Retorna true se o comando for executado com sucesso
-    // ou false se a execução falhar.
+    // =====================================================
+    // CADASTRAR USUÁRIO
+    // =====================================================
+
     public function cadastrar(
         string $nome,
         string $email,
         string $senha
     ): bool {
 
-        // Transforma a senha em um hash seguro.
-        // Assim, a senha original não é armazenada
-        // diretamente no banco de dados.
-        $senhaHash = password_hash(
+        // Criptografa a senha
+        $senhaSegura = password_hash(
             $senha,
             PASSWORD_DEFAULT
         );
 
-        // Comando SQL que insere um novo usuário
-        // na tabela "usuarios".
-        // Os campos XP e nível começam com os valores:
-        // XP = 0 e nível = 1.
-        // Os símbolos ? são parâmetros que receberão
-        // os valores durante a execução do comando.
-        $sql = "
-            INSERT INTO usuarios
-            (nome, email, senha, xp, nivel)
-            VALUES (?, ?, ?, 0, 1)
-        ";
+        // SQL para inserir usuário
+        $sql = "INSERT INTO usuarios
+                (nome, email, senha)
+                VALUES
+                (:nome, :email, :senha)";
 
-        // Prepara o comando SQL antes de executá-lo.
-        // O prepare() permite trabalhar com parâmetros.
-        $stmt = $this->db->prepare($sql);
+        $comando = $this->banco->prepare($sql);
 
-        // Executa o cadastro com os dados informados.
-        // strtolower($email) converte o e-mail para
-        // letras minúsculas para padronizar o cadastro.
-        // A senha enviada ao banco é o hash gerado,
-        // e não a senha original.
-        return $stmt->execute([
-            $nome,
-            strtolower($email),
-            $senhaHash
+        // Executa o cadastro
+        return $comando->execute([
+            ":nome" => $nome,
+            ":email" => $email,
+            ":senha" => $senhaSegura
         ]);
     }
 
-    // MÉTODO BUSCAR POR E-MAIL
-    // Procura um usuário utilizando seu endereço de e-mail.
-    // Recebe o e-mail como texto (string).
-    // Retorna um array com os dados encontrados
-    // ou null se o usuário não existir.
-    public function buscarPorEmail(string $email): ?array
-    {
-        // Consulta SQL que busca os dados do usuário
-        // cujo e-mail corresponde ao valor informado.
-        $sql = "
-            SELECT *
-            FROM usuarios
-            WHERE email = ?
-        ";
+    // =====================================================
+    // LOGIN
+    // =====================================================
 
-        // Prepara a consulta SQL utilizando PDO.
-        $stmt = $this->db->prepare($sql);
+    public function login(
+        string $email,
+        string $senha
+    ): bool {
 
-        // Executa a consulta com o e-mail convertido
-        // para letras minúsculas.
-        $stmt->execute([
-            strtolower($email)
+        $sql = "SELECT * FROM usuarios
+                WHERE email = :email";
+
+        $comando = $this->banco->prepare($sql);
+
+        $comando->execute([
+            ":email" => $email
         ]);
 
-        // Recupera o primeiro registro encontrado.
-        // O fetch() retorna os dados ou false
-        // quando nenhum usuário é encontrado.
-        $usuario = $stmt->fetch();
+        $usuario = $comando->fetch(PDO::FETCH_ASSOC);
 
-        // Se encontrou o usuário, retorna seus dados.
-        // Caso contrário, retorna null.
-        return $usuario ?: null;
+        // Verifica se encontrou o usuário
+        // e se a senha está correta
+        if (
+            $usuario &&
+            password_verify($senha, $usuario["senha"])
+        ) {
+
+            // Guarda os dados na sessão
+            $_SESSION["usuario_id"] = $usuario["id"];
+            $_SESSION["usuario_nome"] = $usuario["nome"];
+
+            return true;
+        }
+
+        return false;
     }
 
-    // MÉTODO BUSCAR POR ID
-    // Procura um usuário pelo seu identificador (ID).
-    // Recebe o ID como número inteiro (int).
-    // Retorna os dados do usuário em um array
-    // ou null se nenhum registro for encontrado.
+    // =====================================================
+    // BUSCAR USUÁRIO
+    // =====================================================
+
     public function buscarPorId(int $id): ?array
     {
-        // Consulta SQL que seleciona os dados
-        // do usuário que possui o ID informado.
-        $sql = "
-            SELECT *
-            FROM usuarios
-            WHERE id = ?
-        ";
+        $sql = "SELECT * FROM usuarios
+                WHERE id = :id";
 
-        // Prepara a consulta SQL antes da execução.
-        $stmt = $this->db->prepare($sql);
+        $comando = $this->banco->prepare($sql);
 
-        // Executa a consulta substituindo o ? pelo ID.
-        $stmt->execute([$id]);
+        $comando->execute([
+            ":id" => $id
+        ]);
 
-        // Recupera os dados do usuário encontrado.
-        $usuario = $stmt->fetch();
+        $usuario = $comando->fetch(PDO::FETCH_ASSOC);
 
-        // Retorna o registro encontrado ou null
-        // se não existir um usuário com esse ID.
         return $usuario ?: null;
     }
 
-    // MÉTODO ADICIONAR XP
-    // Adiciona pontos de experiência (XP) ao usuário
-    // e calcula seu nível com base no total acumulado.
-    // Parâmetros:
-    // $id = ID do usuário que receberá os pontos.
-    // $xp = Quantidade de XP que será adicionada.
-    // O ": void" indica que o método não retorna valor.
+    // =====================================================
+    // ADICIONAR XP
+    // =====================================================
+
     public function adicionarXP(
         int $id,
         int $xp
     ): void {
 
-        // Busca os dados do usuário pelo ID informado.
+        // Primeiro pegamos o usuário
         $usuario = $this->buscarPorId($id);
 
-        // Verifica se o usuário foi encontrado.
-        // Se não existir, encerra o método sem atualizar.
         if (!$usuario) {
             return;
         }
 
-        // Soma o XP atual do usuário com os novos pontos.
+        // Calculamos o novo XP
         $novoXP = $usuario["xp"] + $xp;
 
-        // Calcula o nível com base no XP acumulado.
-        // A função intdiv() realiza uma divisão inteira.
-        // A cada 100 XP acumulados, o usuário avança
-        // para o próximo nível.
-        // Exemplos:
-        // 0 a 99 XP   = nível 1
-        // 100 a 199 XP = nível 2
-        // 200 a 299 XP = nível 3
-        $novoNivel = intdiv(
-            $novoXP,
-            100
-        ) + 1;
+        // Calculamos o nível
+        $novoNivel = 1;
 
-        // Comando SQL que atualiza o XP e o nível
-        // do usuário na tabela "usuarios".
-        // A atualização é feita usando o ID do usuário.
-        $sql = "
-            UPDATE usuarios
-            SET xp = ?, nivel = ?
-            WHERE id = ?
-        ";
+        if ($novoXP >= 700) {
+            $novoNivel = 5;
+        } elseif ($novoXP >= 450) {
+            $novoNivel = 4;
+        } elseif ($novoXP >= 250) {
+            $novoNivel = 3;
+        } elseif ($novoXP >= 100) {
+            $novoNivel = 2;
+        }
 
-        // Prepara o comando SQL de atualização.
-        $stmt = $this->db->prepare($sql);
+        // Atualiza banco
+        $sql = "UPDATE usuarios
+                SET xp = :xp,
+                    nivel = :nivel
+                WHERE id = :id";
 
-        // Executa a atualização com os novos valores:
-        // 1º parâmetro = novo total de XP.
-        // 2º parâmetro = novo nível calculado.
-        // 3º parâmetro = ID do usuário atualizado.
-        $stmt->execute([
-            $novoXP,
-            $novoNivel,
-            $id
+        $comando = $this->banco->prepare($sql);
+
+        $comando->execute([
+            ":xp" => $novoXP,
+            ":nivel" => $novoNivel,
+            ":id" => $id
         ]);
     }
 }

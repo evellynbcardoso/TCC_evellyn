@@ -1,100 +1,174 @@
+
 <?php
 
-// CLASSE QUESTAO
-// Responsável por consultar e buscar questões matemáticas
-// cadastradas no banco de dados do sistema MathPlay.
+require_once __DIR__ . "/banco.php";
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 class Questao
 {
-    // Atributo privado que armazena a conexão com o banco
-    // de dados MySQL utilizando a classe PDO.
-    private PDO $db;
+    private PDO $banco;
 
-    // CONSTRUTOR DA CLASSE
-    // É executado automaticamente quando um objeto Questao
-    // é criado. Recebe a conexão com o banco de dados.
-    public function __construct(PDO $db)
+    public function __construct()
     {
-        // Guarda a conexão recebida no atributo da classe.
-        // O $this->db permite utilizar essa conexão
-        // nos outros métodos desta classe.
-        $this->db = $db;
+        $conexao = new Banco();
+        $this->banco = $conexao->getConexao();
     }
 
-    // MÉTODO LISTAR POR TEMA
-    // Lista todas as questões que pertencem a determinado
-    // tema, como "Números inteiros" ou "Equações".
-    // Recebe o tema como texto (string).
-    // Retorna uma lista de questões em formato de array.
-    public function listarPorTema(
-        string $tema
-    ): array {
+    // =====================================================
+    // BUSCAR QUESTÃO SEM REPETIR NA RODADA
+    // =====================================================
 
-        // Consulta SQL que seleciona todas as colunas
-        // da tabela "questoes" para o tema informado.
-        // O símbolo ? é um parâmetro que será preenchido
-        // posteriormente com o valor recebido no método.
-        // ORDER BY id organiza as questões pelo ID,
-        // do menor para o maior.
-        $sql = "
-            SELECT *
-            FROM questoes
-            WHERE tema = ?
-            ORDER BY id
-        ";
-
-        // Prepara a consulta SQL antes de executá-la.
-        // Isso permite utilizar parâmetros com segurança.
-        $stmt = $this->db->prepare($sql);
-
-        // Executa a consulta substituindo o ? pelo tema
-        // recebido, por exemplo, "Equações".
-        $stmt->execute([
-            $tema
-        ]);
-
-        // Retorna todas as questões encontradas.
-        // O fetchAll() reúne os registros em um array.
-        return $stmt->fetchAll();
-    }
-
-    // MÉTODO BUSCAR POR ID
-    // Busca uma questão específica pelo seu identificador
-    // (ID) na tabela "questoes".
-    // Recebe o ID como número inteiro (int).
-    // Retorna um array com os dados da questão encontrada
-    // ou null caso nenhuma questão seja encontrada.
-    public function buscarPorId(
-        int $id
+    public function buscarQuestao(
+        string $tipo,
+        ?int $usuarioId = null
     ): ?array {
 
-        // Consulta SQL que seleciona todas as colunas
-        // da questão cujo ID corresponde ao valor informado.
-        // O ? será substituído pelo ID na execução.
-        $sql = "
-            SELECT *
-            FROM questoes
-            WHERE id = ?
-        ";
+        // Identifica as questões já exibidas nesta sessão
+        // para cada tipo de exercício e aluno.
+        $idAluno = $usuarioId ?? (int) ($_SESSION["usuario_id"] ?? 0);
 
-        // Prepara a consulta SQL usando a conexão PDO.
-        $stmt = $this->db->prepare($sql);
+        $chave = "questoes_exibidas_" .
+                 $idAluno . "_" .
+                 preg_replace('/[^a-zA-Z0-9_-]/', '', $tipo);
 
-        // Executa a consulta utilizando o ID recebido.
-        // Por exemplo, se o ID for 5, busca a questão 5.
-        $stmt->execute([
-            $id
+        if (!isset($_SESSION[$chave])) {
+            $_SESSION[$chave] = [];
+        }
+
+        $exibidas = array_map(
+            'intval',
+            $_SESSION[$chave]
+        );
+
+        // Monta a consulta para ignorar as questões exibidas.
+        $sql = "SELECT *
+                FROM questoes
+                WHERE tipo = :tipo";
+
+        if (!empty($exibidas)) {
+            $marcadores = [];
+
+            foreach ($exibidas as $indice => $id) {
+                $marcadores[] = ":id" . $indice;
+            }
+
+            $sql .= " AND id NOT IN (" .
+                    implode(", ", $marcadores) . ")";
+        }
+
+        $sql .= " ORDER BY RAND() LIMIT 1";
+
+        $comando = $this->banco->prepare($sql);
+
+        $parametros = [
+            ":tipo" => $tipo
+        ];
+
+        foreach ($exibidas as $indice => $id) {
+            $parametros[":id" . $indice] = $id;
+        }
+
+        $comando->execute($parametros);
+
+        $questao = $comando->fetch(PDO::FETCH_ASSOC);
+
+        // Se todas já foram exibidas, encerra a rodada.
+        if (!$questao) {
+            return null;
+        }
+
+        // Marca a questão como exibida imediatamente.
+        $_SESSION[$chave][] = (int) $questao["id"];
+
+        return $questao;
+    }
+
+    // =====================================================
+    // BUSCAR QUESTÃO PELO ID
+    // =====================================================
+
+    public function buscarPorId(int $id): ?array
+    {
+        $sql = "SELECT *
+                FROM questoes
+                WHERE id = :id
+                LIMIT 1";
+
+        $comando = $this->banco->prepare($sql);
+
+        $comando->execute([
+            ":id" => $id
         ]);
 
-        // Recupera apenas o primeiro registro encontrado.
-        // O fetch() retorna os dados da questão ou false
-        // quando não existe um registro correspondente.
-        $questao = $stmt->fetch();
+        $questao = $comando->fetch(PDO::FETCH_ASSOC);
 
-        // Se encontrou a questão, retorna seu array de dados.
-        // Caso contrário, retorna null.
-        // O operador ?: verifica se $questao possui um valor
-        // válido; se não possuir, utiliza null.
         return $questao ?: null;
+    }
+
+    // =====================================================
+    // REGISTRAR RESPOSTA
+    // =====================================================
+
+    public function registrarResposta(
+        int $usuarioId,
+        int $questaoId,
+        string $resposta,
+        bool $acertou,
+        int $xp
+    ): void {
+
+        $acertouBanco = $acertou ? 1 : 0;
+        $xp = $acertouBanco === 1 ? max(0, $xp) : 0;
+
+        $sql = "INSERT INTO respostas
+                (
+                    usuario_id,
+                    questao_id,
+                    resposta_usuario,
+                    acertou,
+                    xp_ganho
+                )
+                VALUES
+                (
+                    :usuario,
+                    :questao,
+                    :resposta,
+                    :acertou,
+                    :xp
+                )";
+
+        $comando = $this->banco->prepare($sql);
+
+        $comando->execute([
+            ":usuario" => $usuarioId,
+            ":questao" => $questaoId,
+            ":resposta" => $resposta,
+            ":acertou" => $acertouBanco,
+            ":xp" => $xp
+        ]);
+    }
+
+    // =====================================================
+    // REINICIAR RODADA DE UM TIPO DE QUESTÃO
+    // Chame somente quando quiser começar uma nova rodada.
+    // =====================================================
+
+    public function reiniciarRodada(string $tipo): void
+    {
+        $idAluno = (int) ($_SESSION["usuario_id"] ?? 0);
+
+        $tipoLimpo = preg_replace(
+            '/[^a-zA-Z0-9_-]/',
+            '',
+            $tipo
+        );
+
+        $chave = "questoes_exibidas_" .
+                 $idAluno . "_" . $tipoLimpo;
+
+        unset($_SESSION[$chave]);
     }
 }

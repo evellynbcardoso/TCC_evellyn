@@ -698,3 +698,20 @@ a {
         flex-direction: column;
     }
 }
+
+
+.botao-ranking {
+    display: inline-block;
+    padding: 12px 22px;
+    background: #5145cd;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 12px;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.botao-ranking:hover {
+    background: #4035ad;
+    transform: translateY(-3px);
+}

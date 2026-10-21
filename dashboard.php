@@ -166,9 +166,21 @@ $dados = $usuario->buscarPorId(
 
             </a>
 
+            
+            <a href="ranking.php" class="botao-ranking">
+                🏆 Ver Ranking
+            </a>
+
+            <a href="ranking.php" class="botao-ranking">
+                🏆 Ver Ranking
+            </a>
+
+
         </section>
 
     </main>
+
+    <?php include_once __DIR__ . '/acessibilidade.php'; ?>
 
 </body>
 

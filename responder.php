@@ -222,6 +222,8 @@ if ($acertou) {
 
     </main>
 
+    <?php include_once __DIR__ . '/acessibilidade.php'; ?>
+
 </body>
 
 </html>

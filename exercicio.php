@@ -258,5 +258,7 @@ if ($dados === null || $dados === false) {
 
 </main>
 
+<?php include_once __DIR__ . '/acessibilidade.php'; ?>
+
 </body>
 </html>

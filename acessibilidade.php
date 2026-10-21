@@ -1,18 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acessibilidade</title>
-</head>
-<body>
-    <!-- =====================================================
-     PAINEL DE ACESSIBILIDADE - MATHPLAY
-====================================================== -->
+<?php
+// =====================================================
+// ACESSIBILIDADE - MATHPLAY
+// Este arquivo será incluído nas páginas do sistema.
+// =====================================================
+?>
 
+<!-- PAINEL DE ACESSIBILIDADE -->
 <div id="acessibilidadeContainer">
 
-    <!-- Botão para abrir ou fechar o painel -->
+    <!-- Botão para abrir e fechar -->
     <button
         type="button"
         id="abrirAcessibilidade"
@@ -23,7 +19,7 @@
         ♿ Acessibilidade
     </button>
 
-    <!-- Painel de configurações -->
+    <!-- Opções de acessibilidade -->
     <section
         id="painelAcessibilidade"
         aria-label="Opções de acessibilidade"
@@ -52,7 +48,7 @@
                 id="contraste"
                 aria-pressed="false">
 
-                Alto contraste
+                Ativar alto contraste
             </button>
 
             <button
@@ -86,7 +82,7 @@
 <style>
 /* =====================================================
    PAINEL DE ACESSIBILIDADE
-====================================================== */
+===================================================== */
 
 #acessibilidadeContainer {
     position: fixed;
@@ -95,8 +91,6 @@
     z-index: 99999;
     font-family: Arial, Helvetica, sans-serif;
 }
-
-/* Botão principal */
 
 #abrirAcessibilidade {
     background: #5265d8;
@@ -114,14 +108,12 @@
     background: #3548b5;
 }
 
-/* Painel */
-
 #painelAcessibilidade {
     position: absolute;
     right: 0;
     bottom: 65px;
     width: 300px;
-    max-width: calc(100vw - 40px);
+    max-width: calc(100vw - 24px);
     max-height: 75vh;
     overflow-y: auto;
     padding: 18px;
@@ -132,8 +124,6 @@
     border-radius: 14px;
     box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
 }
-
-/* Garante que o atributo hidden realmente esconda o painel */
 
 #painelAcessibilidade[hidden] {
     display: none !important;
@@ -147,8 +137,6 @@
 #painelAcessibilidade p {
     line-height: 1.5;
 }
-
-/* Organização dos botões */
 
 .grupoAcessibilidade {
     display: flex;
@@ -183,8 +171,8 @@
 }
 
 /* =====================================================
-   MODO DE ALTO CONTRASTE
-====================================================== */
+   ALTO CONTRASTE
+===================================================== */
 
 body.alto-contraste {
     background: #000000 !important;
@@ -196,7 +184,6 @@ body.alto-contraste main,
 body.alto-contraste footer,
 body.alto-contraste nav,
 body.alto-contraste article,
-body.alto-contraste section,
 body.alto-contraste aside,
 body.alto-contraste .card,
 body.alto-contraste .question-card,
@@ -241,8 +228,8 @@ body.alto-contraste #painelAcessibilidade p {
 }
 
 /* =====================================================
-   REDUÇÃO DE ANIMAÇÕES
-====================================================== */
+   REDUZIR ANIMAÇÕES
+===================================================== */
 
 body.sem-animacoes *,
 body.sem-animacoes *::before,
@@ -253,11 +240,10 @@ body.sem-animacoes *::after {
 }
 
 /* =====================================================
-   AJUSTES PARA CELULARES
-====================================================== */
+   RESPONSIVIDADE
+===================================================== */
 
 @media (max-width: 480px) {
-
     #acessibilidadeContainer {
         right: 12px;
         bottom: 12px;
@@ -267,18 +253,22 @@ body.sem-animacoes *::after {
         width: 280px;
         max-width: calc(100vw - 24px);
     }
+}
 
+/* Respeita também a preferência de movimento do sistema */
+
+@media (prefers-reduced-motion: reduce) {
+    body:not(.animacoes-ativadas) *,
+    body:not(.animacoes-ativadas) *::before,
+    body:not(.animacoes-ativadas) *::after {
+        scroll-behavior: auto;
+    }
 }
 </style>
 
 <script>
 (function () {
-
     "use strict";
-
-    // =================================================
-    // LOCALIZAR OS ELEMENTOS
-    // =================================================
 
     const abrir = document.getElementById("abrirAcessibilidade");
     const painel = document.getElementById("painelAcessibilidade");
@@ -289,11 +279,9 @@ body.sem-animacoes *::after {
     const contraste = document.getElementById("contraste");
     const animacoes = document.getElementById("animacoes");
     const restaurar = document.getElementById("restaurar");
-
     const mensagem = document.getElementById("mensagemAcessibilidade");
 
-    // Evita erros caso o código seja colocado em uma página
-    // sem o painel de acessibilidade.
+    // Impede erros se o painel não estiver presente na página.
     if (
         !abrir || !painel || !fechar ||
         !aumentar || !diminuir || !contraste ||
@@ -302,33 +290,22 @@ body.sem-animacoes *::after {
         return;
     }
 
-    // =================================================
-    // CONFIGURAÇÕES INICIAIS
-    // =================================================
-
     const chavePreferencias = "mathplay_acessibilidade";
 
     let tamanhoFonte = 100;
     let altoContraste = false;
     let semAnimacoes = false;
 
-    // =================================================
-    // MOSTRAR MENSAGENS
-    // =================================================
-
     function informar(texto) {
         mensagem.textContent = texto;
     }
 
-    // =================================================
-    // ABRIR E FECHAR O PAINEL
-    // =================================================
+    // Abrir e fechar o painel.
 
     function abrirPainel() {
         painel.hidden = false;
         abrir.setAttribute("aria-expanded", "true");
-
-        document.getElementById("aumentarFonte").focus();
+        aumentar.focus();
     }
 
     function fecharPainel(devolverFoco = true) {
@@ -341,91 +318,63 @@ body.sem-animacoes *::after {
     }
 
     abrir.addEventListener("click", function () {
-
         if (painel.hidden) {
             abrirPainel();
         } else {
             fecharPainel(false);
         }
-
     });
 
     fechar.addEventListener("click", function () {
         fecharPainel(true);
     });
 
-    // Fecha o painel com a tecla Escape.
     document.addEventListener("keydown", function (evento) {
-
         if (evento.key === "Escape" && !painel.hidden) {
             fecharPainel(true);
         }
-
     });
 
-    // =================================================
-    // APLICAR O TAMANHO DA FONTE
-    // =================================================
+    // Ajustar o tamanho do texto.
 
     function aplicarFonte() {
-
         document.documentElement.style.fontSize =
             tamanhoFonte + "%";
-
     }
 
-    // Aumenta a fonte até 150%.
     aumentar.addEventListener("click", function () {
-
         tamanhoFonte = Math.min(tamanhoFonte + 10, 150);
-
         aplicarFonte();
 
         informar("Tamanho do texto: " + tamanhoFonte + "%.");
-
         salvarPreferencias();
-
     });
 
-    // Diminui a fonte até 80%.
     diminuir.addEventListener("click", function () {
-
         tamanhoFonte = Math.max(tamanhoFonte - 10, 80);
-
         aplicarFonte();
 
         informar("Tamanho do texto: " + tamanhoFonte + "%.");
-
         salvarPreferencias();
-
     });
 
-    // =================================================
-    // ALTO CONTRASTE
-    // =================================================
+    // Alto contraste.
 
     function aplicarContraste() {
-
         document.body.classList.toggle(
             "alto-contraste",
             altoContraste
         );
 
-        contraste.setAttribute(
-            "aria-pressed",
-            String(altoContraste)
-        );
+        contraste.setAttribute("aria-pressed", String(altoContraste));
 
         contraste.textContent = altoContraste
             ? "Desativar alto contraste"
             : "Ativar alto contraste";
-
     }
 
     contraste.addEventListener("click", function () {
-
         altoContraste = !altoContraste;
-
         aplicarContraste();
 
         informar(
@@ -435,35 +384,25 @@ body.sem-animacoes *::after {
         );
 
         salvarPreferencias();
-
     });
 
-    // =================================================
-    // REDUZIR ANIMAÇÕES
-    // =================================================
+    // Redução de animações.
 
     function aplicarAnimacoes() {
-
         document.body.classList.toggle(
             "sem-animacoes",
             semAnimacoes
         );
 
-        animacoes.setAttribute(
-            "aria-pressed",
-            String(semAnimacoes)
-        );
+        animacoes.setAttribute("aria-pressed", String(semAnimacoes));
 
         animacoes.textContent = semAnimacoes
             ? "Ativar animações"
             : "Reduzir animações";
-
     }
 
     animacoes.addEventListener("click", function () {
-
         semAnimacoes = !semAnimacoes;
-
         aplicarAnimacoes();
 
         informar(
@@ -473,17 +412,12 @@ body.sem-animacoes *::after {
         );
 
         salvarPreferencias();
-
     });
 
-    // =================================================
-    // SALVAR AS PREFERÊNCIAS NO NAVEGADOR
-    // =================================================
+    // Guardar as preferências no navegador.
 
     function salvarPreferencias() {
-
         try {
-
             localStorage.setItem(
                 chavePreferencias,
                 JSON.stringify({
@@ -492,66 +426,45 @@ body.sem-animacoes *::after {
                     semAnimacoes: semAnimacoes
                 })
             );
-
         } catch (erro) {
-
-            // O painel continua funcionando mesmo se
-            // o navegador bloquear o armazenamento.
-
+            // O painel continua funcionando sem armazenamento.
         }
-
     }
 
-    // =================================================
-    // CARREGAR AS PREFERÊNCIAS SALVAS
-    // =================================================
+    // Carregar as preferências guardadas.
 
     function carregarPreferencias() {
-
         try {
-
             const salvas = localStorage.getItem(chavePreferencias);
 
-            if (!salvas) {
-                return;
+            if (salvas) {
+                const preferencias = JSON.parse(salvas);
+
+                if (
+                    Number.isFinite(preferencias.tamanhoFonte) &&
+                    preferencias.tamanhoFonte >= 80 &&
+                    preferencias.tamanhoFonte <= 150
+                ) {
+                    tamanhoFonte = preferencias.tamanhoFonte;
+                }
+
+                altoContraste = preferencias.altoContraste === true;
+                semAnimacoes = preferencias.semAnimacoes === true;
             }
-
-            const preferencias = JSON.parse(salvas);
-
-            if (
-                Number.isFinite(preferencias.tamanhoFonte) &&
-                preferencias.tamanhoFonte >= 80 &&
-                preferencias.tamanhoFonte <= 150
-            ) {
-                tamanhoFonte = preferencias.tamanhoFonte;
-            }
-
-            altoContraste = preferencias.altoContraste === true;
-            semAnimacoes = preferencias.semAnimacoes === true;
-
         } catch (erro) {
-
-            // Se os dados estiverem inválidos, utiliza
-            // as configurações padrão.
-
             tamanhoFonte = 100;
             altoContraste = false;
             semAnimacoes = false;
-
         }
 
         aplicarFonte();
         aplicarContraste();
         aplicarAnimacoes();
-
     }
 
-    // =================================================
-    // RESTAURAR CONFIGURAÇÕES PADRÃO
-    // =================================================
+    // Restaurar configurações iniciais.
 
     restaurar.addEventListener("click", function () {
-
         tamanhoFonte = 100;
         altoContraste = false;
         semAnimacoes = false;
@@ -567,13 +480,9 @@ body.sem-animacoes *::after {
         }
 
         informar("Configurações de acessibilidade restauradas.");
-
     });
 
-    // Aplica as preferências quando a página é carregada.
     carregarPreferencias();
 
 })();
 </script>
-</body>
-</html>

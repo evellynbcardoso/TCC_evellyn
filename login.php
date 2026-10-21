@@ -20,7 +20,9 @@
     <div class="form-card">
 
         <div class="logo">
-            🎮 Estudaê
+            <h1><img src="img/logo_estudae.png" 
+        alt="Logo do Estudaê" 
+        width="100" ></h1>
         </div>
 
         <h2>

@@ -44,7 +44,9 @@ $dados = $usuario->buscarPorId(
 
     <header class="menu">
 
-        <h1>🎮 Estudaê</h1>
+        <h1><img src="img/logo_estudae.png" 
+        alt="Logo do Estudaê" 
+        width="100" ></h1>
 
         <div>
 

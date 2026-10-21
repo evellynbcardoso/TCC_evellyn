@@ -106,7 +106,7 @@ try {
 
 <main class="ranking-container">
 
-    <h1>🏆 Ranking MathPlay</h1>
+    <h1>🏆 Ranking Estudaê</h1>
 
     <p class="ranking-descricao">
         Continue estudando e conquiste o primeiro lugar!

@@ -1,19 +1,18 @@
+
 <?php
 
 // =========================================================
-// TELA DE EXERCÍCIOS - MATHPLAY
+// TELA DE EXERCÍCIOS - ESTUDAÊ
 // =========================================================
 
-// Inicia a sessão caso ainda não esteja iniciada.
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Importa a classe responsável pelas questões.
 require_once __DIR__ . "/classes/questao.php";
 
 // =========================================================
-// VERIFICAR SE O ALUNO ESTÁ LOGADO
+// VERIFICAR LOGIN
 // =========================================================
 
 if (!isset($_SESSION["usuario_id"])) {
@@ -21,54 +20,54 @@ if (!isset($_SESSION["usuario_id"])) {
     exit;
 }
 
-// =========================================================
-// IDENTIFICAR O ALUNO E O TIPO DE QUESTÃO
-// =========================================================
-
 $usuarioId = (int) $_SESSION["usuario_id"];
 
-// Define o tema padrão.
+// =========================================================
+// IDENTIFICAR O TEMA
+// =========================================================
+
 $tipo = $_GET["tipo"] ?? "inteiros";
 
-// Aceita somente os temas permitidos.
 if (!in_array($tipo, ["inteiros", "equacoes"], true)) {
     $tipo = "inteiros";
 }
 
-// =========================================================
-// VERIFICAR SE O ALUNO DESEJA UMA NOVA RODADA
-// =========================================================
-
-// Se o aluno clicar em "Começar nova rodada",
-// remove o histórico de questões visualizadas desse tema.
-// IMPORTANTE: o método limparRodada() precisa existir
-// na classe Questao para que esta chamada funcione.
-
 $questao = new Questao();
 
-if (isset($_GET["nova_rodada"]) && $_GET["nova_rodada"] === "1") {
+// =========================================================
+// INICIAR UMA NOVA RODADA
+// =========================================================
 
-    if (method_exists($questao, "limparRodada")) {
-        $questao->limparRodada($tipo, $usuarioId);
-    }
+// Limpa apenas as questões exibidas deste aluno e tema.
+// O histórico de respostas e o XP são preservados.
 
+if (isset($_GET["nova_rodada"])
+    && $_GET["nova_rodada"] === "1") {
+
+    $questao->limparRodada($tipo, $usuarioId);
+
+    // Redireciona sem o parâmetro de reinicialização.
+    header(
+        "Location: exercicio.php?tipo="
+        . urlencode($tipo)
+    );
+    exit;
 }
 
 // =========================================================
-// BUSCAR QUESTÃO
+// BUSCAR A PRÓXIMA QUESTÃO
 // =========================================================
 
 $dados = $questao->buscarQuestao($tipo, $usuarioId);
 
 // =========================================================
-// VERIFICAR SE EXISTE QUESTÃO DISPONÍVEL
+// MENSAGEM QUANDO NÃO HÁ MAIS QUESTÕES
 // =========================================================
 
 $mensagem = "";
 
-if ($dados === null || $dados === false) {
-    $dados = null;
-    $mensagem = "Você já visualizou todas as questões desta rodada!";
+if ($dados === null) {
+    $mensagem = " Que tal praticar novamente e testar mais os seus conhecimentos?";
 }
 
 ?>
@@ -78,9 +77,10 @@ if ($dados === null || $dados === false) {
 <head>
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-    <title>Desafio - MathPlay</title>
+    <title>Desafio - Estudaê</title>
 
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -89,7 +89,7 @@ if ($dados === null || $dados === false) {
 
 <header class="menu">
 
-    <h1>🎮 MathPlay</h1>
+    <h1>🎮 Estudaê</h1>
 
     <a href="dashboard.php" class="btn btn-outline">
         ← Voltar
@@ -103,15 +103,14 @@ if ($dados === null || $dados === false) {
 
         <?php if ($dados === null): ?>
 
-            <h2>🎉 Parabéns!</h2>
+            <h2>🎉 Rodada finalizada!</h2>
 
             <p>
-                <?= htmlspecialchars($mensagem, ENT_QUOTES, "UTF-8") ?>
-            </p>
-
-            <p>
-                Você chegou ao final das questões disponíveis
-                desta rodada!
+                <?= htmlspecialchars(
+                    $mensagem,
+                    ENT_QUOTES,
+                    "UTF-8"
+                ) ?>
             </p>
 
             <a href="dashboard.php" class="btn">
@@ -143,7 +142,7 @@ if ($dados === null || $dados === false) {
 
             <h2>
                 <?= htmlspecialchars(
-                    $dados["pergunta"] ?? "",
+                    $dados["pergunta"] ?? $dados["enunciado"] ?? "",
                     ENT_QUOTES,
                     "UTF-8"
                 ) ?>
@@ -151,14 +150,12 @@ if ($dados === null || $dados === false) {
 
             <form action="responder.php" method="POST">
 
-                <!-- ID da questão que será respondida -->
                 <input
                     type="hidden"
                     name="questao_id"
                     value="<?= (int) $dados["id"] ?>"
                 >
 
-                <!-- Tema da questão -->
                 <input
                     type="hidden"
                     name="tipo"
@@ -172,76 +169,60 @@ if ($dados === null || $dados === false) {
                 <div class="alternativas">
 
                     <label class="alternativa">
-
                         <input
                             type="radio"
                             name="resposta"
                             value="A"
                             required
                         >
-
                         <span>A)</span>
-
                         <?= htmlspecialchars(
                             $dados["alternativa_a"] ?? "",
                             ENT_QUOTES,
                             "UTF-8"
                         ) ?>
-
                     </label>
 
                     <label class="alternativa">
-
                         <input
                             type="radio"
                             name="resposta"
                             value="B"
                         >
-
                         <span>B)</span>
-
                         <?= htmlspecialchars(
                             $dados["alternativa_b"] ?? "",
                             ENT_QUOTES,
                             "UTF-8"
                         ) ?>
-
                     </label>
 
                     <label class="alternativa">
-
                         <input
                             type="radio"
                             name="resposta"
                             value="C"
                         >
-
                         <span>C)</span>
-
                         <?= htmlspecialchars(
                             $dados["alternativa_c"] ?? "",
                             ENT_QUOTES,
                             "UTF-8"
                         ) ?>
-
                     </label>
 
                     <label class="alternativa">
-
                         <input
                             type="radio"
                             name="resposta"
                             value="D"
                         >
-
                         <span>D)</span>
-
                         <?= htmlspecialchars(
                             $dados["alternativa_d"] ?? "",
                             ENT_QUOTES,
                             "UTF-8"
                         ) ?>
-
                     </label>
 
                 </div>
@@ -258,7 +239,7 @@ if ($dados === null || $dados === false) {
 
 </main>
 
-<?php include_once __DIR__ . '/acessibilidade.php'; ?>
+<?php include_once __DIR__ . "/acessibilidade.php"; ?>
 
 </body>
 </html>

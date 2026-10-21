@@ -20,7 +20,7 @@
     <div class="form-card">
 
         <div class="logo">
-            🎮 MathPlay
+            🎮 Estudaê
         </div>
 
         <h2>

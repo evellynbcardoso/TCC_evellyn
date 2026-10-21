@@ -1,6 +1,11 @@
 
 <?php
 
+// =====================================================
+// CLASSE QUESTAO
+// Busca questões, controla a rodada e registra respostas.
+// =====================================================
+
 require_once __DIR__ . "/banco.php";
 
 if (session_status() === PHP_SESSION_NONE) {
@@ -18,6 +23,29 @@ class Questao
     }
 
     // =====================================================
+    // GERA A CHAVE DA RODADA
+    // Separa as questões por aluno e por tema.
+    // =====================================================
+
+    private function obterChaveRodada(
+        string $tipo,
+        ?int $usuarioId = null
+    ): string {
+
+        $idAluno = $usuarioId
+            ?? (int) ($_SESSION["usuario_id"] ?? 0);
+
+        $tipoLimpo = preg_replace(
+            '/[^a-zA-Z0-9_-]/',
+            '',
+            $tipo
+        );
+
+        return "questoes_exibidas_"
+            . $idAluno . "_" . $tipoLimpo;
+    }
+
+    // =====================================================
     // BUSCAR QUESTÃO SEM REPETIR NA RODADA
     // =====================================================
 
@@ -26,24 +54,22 @@ class Questao
         ?int $usuarioId = null
     ): ?array {
 
-        // Identifica as questões já exibidas nesta sessão
-        // para cada tipo de exercício e aluno.
-        $idAluno = $usuarioId ?? (int) ($_SESSION["usuario_id"] ?? 0);
+        $chave = $this->obterChaveRodada(
+            $tipo,
+            $usuarioId
+        );
 
-        $chave = "questoes_exibidas_" .
-                 $idAluno . "_" .
-                 preg_replace('/[^a-zA-Z0-9_-]/', '', $tipo);
-
-        if (!isset($_SESSION[$chave])) {
+        if (!isset($_SESSION[$chave])
+            || !is_array($_SESSION[$chave])) {
             $_SESSION[$chave] = [];
         }
 
-        $exibidas = array_map(
+        $exibidas = array_values(array_unique(array_map(
             'intval',
             $_SESSION[$chave]
-        );
+        )));
 
-        // Monta a consulta para ignorar as questões exibidas.
+        // Busca somente questões ainda não exibidas.
         $sql = "SELECT *
                 FROM questoes
                 WHERE tipo = :tipo";
@@ -55,17 +81,15 @@ class Questao
                 $marcadores[] = ":id" . $indice;
             }
 
-            $sql .= " AND id NOT IN (" .
-                    implode(", ", $marcadores) . ")";
+            $sql .= " AND id NOT IN ("
+                . implode(", ", $marcadores) . ")";
         }
 
         $sql .= " ORDER BY RAND() LIMIT 1";
 
         $comando = $this->banco->prepare($sql);
 
-        $parametros = [
-            ":tipo" => $tipo
-        ];
+        $parametros = [":tipo" => $tipo];
 
         foreach ($exibidas as $indice => $id) {
             $parametros[":id" . $indice] = $id;
@@ -75,12 +99,12 @@ class Questao
 
         $questao = $comando->fetch(PDO::FETCH_ASSOC);
 
-        // Se todas já foram exibidas, encerra a rodada.
+        // Não há mais questões disponíveis nesta rodada.
         if (!$questao) {
             return null;
         }
 
-        // Marca a questão como exibida imediatamente.
+        // Marca a questão para não repeti-la nesta rodada.
         $_SESSION[$chave][] = (int) $questao["id"];
 
         return $questao;
@@ -98,10 +122,7 @@ class Questao
                 LIMIT 1";
 
         $comando = $this->banco->prepare($sql);
-
-        $comando->execute([
-            ":id" => $id
-        ]);
+        $comando->execute([":id" => $id]);
 
         $questao = $comando->fetch(PDO::FETCH_ASSOC);
 
@@ -109,7 +130,7 @@ class Questao
     }
 
     // =====================================================
-    // REGISTRAR RESPOSTA
+    // REGISTRAR RESPOSTA NO BANCO
     // =====================================================
 
     public function registrarResposta(
@@ -121,7 +142,7 @@ class Questao
     ): void {
 
         $acertouBanco = $acertou ? 1 : 0;
-        $xp = $acertouBanco === 1 ? max(0, $xp) : 0;
+        $xpGanho = $acertou ? max(0, $xp) : 0;
 
         $sql = "INSERT INTO respostas
                 (
@@ -147,28 +168,35 @@ class Questao
             ":questao" => $questaoId,
             ":resposta" => $resposta,
             ":acertou" => $acertouBanco,
-            ":xp" => $xp
+            ":xp" => $xpGanho
         ]);
     }
 
     // =====================================================
-    // REINICIAR RODADA DE UM TIPO DE QUESTÃO
-    // Chame somente quando quiser começar uma nova rodada.
+    // LIMPAR A RODADA
+    // Usado pelo botão "Começar nova rodada".
+    // Não apaga respostas nem XP do aluno.
+    // =====================================================
+
+    public function limparRodada(
+        string $tipo,
+        ?int $usuarioId = null
+    ): void {
+
+        $chave = $this->obterChaveRodada(
+            $tipo,
+            $usuarioId
+        );
+
+        unset($_SESSION[$chave]);
+    }
+
+    // =====================================================
+    // COMPATIBILIDADE COM O NOME ANTIGO DO MÉTODO
     // =====================================================
 
     public function reiniciarRodada(string $tipo): void
     {
-        $idAluno = (int) ($_SESSION["usuario_id"] ?? 0);
-
-        $tipoLimpo = preg_replace(
-            '/[^a-zA-Z0-9_-]/',
-            '',
-            $tipo
-        );
-
-        $chave = "questoes_exibidas_" .
-                 $idAluno . "_" . $tipoLimpo;
-
-        unset($_SESSION[$chave]);
+        $this->limparRodada($tipo);
     }
 }

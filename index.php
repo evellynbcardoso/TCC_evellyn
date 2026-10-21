@@ -12,12 +12,12 @@
     <meta charset="UTF-8">
 
     <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+        content="width=device-width, initial-scale=1.0">
 
     <title>MathPlay - Aprenda Matemática</title>
 
     <link rel="stylesheet"
-          href="css/style.css">
+        href="css/style.css">
 
 </head>
 
@@ -25,17 +25,17 @@
 
     <header class="menu">
 
-        <h1>🎮 MathPlay</h1>
+        <h1>🎮 Estudaê</h1>
 
         <div>
 
             <a href="login.php"
-               class="btn btn-outline">
+                class="btn btn-outline">
                 Entrar
             </a>
 
             <a href="cadastro.php"
-               class="btn">
+                class="btn">
                 Criar conta
             </a>
 
@@ -65,7 +65,7 @@
             </p>
 
             <a href="cadastro.php"
-               class="btn btn-large">
+                class="btn btn-large">
                 Começar agora 🚀
             </a>
 

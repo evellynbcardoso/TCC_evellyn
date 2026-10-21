@@ -1,35 +1,34 @@
+
 <?php
-// =====================================================
-// ACESSIBILIDADE - MATHPLAY
-// Este arquivo será incluído nas páginas do sistema.
-// =====================================================
+// ==========================================================
+// ESTUDAÊ - PAINEL DE ACESSIBILIDADE
+// Fonte, alto contraste, redução de animações e restauração.
+// ==========================================================
 ?>
 
-<!-- PAINEL DE ACESSIBILIDADE -->
 <div id="acessibilidadeContainer">
 
-    <!-- Botão para abrir e fechar -->
     <button
         type="button"
         id="abrirAcessibilidade"
-        aria-expanded="false"
         aria-controls="painelAcessibilidade"
-        aria-label="Abrir opções de acessibilidade">
-
+        aria-expanded="false"
+    >
         ♿ Acessibilidade
     </button>
 
-    <!-- Opções de acessibilidade -->
     <section
         id="painelAcessibilidade"
-        aria-label="Opções de acessibilidade"
-        hidden>
+        aria-labelledby="tituloAcessibilidade"
+        hidden
+    >
+        <h2 id="tituloAcessibilidade">Acessibilidade</h2>
 
-        <h2>Acessibilidade</h2>
+        <p class="descricaoAcessibilidade">
+            Personalize sua experiência no Estudaê!
+        </p>
 
-        <p>Personalize sua experiência no MathPlay!</p>
-
-        <div class="grupoAcessibilidade">
+        <div class="botoesAcessibilidade">
 
             <button type="button" id="aumentarFonte">
                 Aumentar texto A+
@@ -39,229 +38,416 @@
                 Diminuir texto A-
             </button>
 
-        </div>
-
-        <div class="grupoAcessibilidade">
-
             <button
                 type="button"
                 id="contraste"
-                aria-pressed="false">
-
+                aria-pressed="false"
+            >
                 Ativar alto contraste
             </button>
 
             <button
                 type="button"
                 id="animacoes"
-                aria-pressed="false">
-
+                aria-pressed="false"
+            >
                 Reduzir animações
+            </button>
+
+            <button type="button" id="restaurar">
+                Restaurar padrão
+            </button>
+
+            <button type="button" id="fecharAcessibilidade">
+                Fechar painel
             </button>
 
         </div>
 
-        <button type="button" id="restaurar">
-            Restaurar padrão
-        </button>
-
-        <button type="button" id="fecharAcessibilidade">
-            Fechar painel
-        </button>
-
         <p
             id="mensagemAcessibilidade"
             role="status"
-            aria-live="polite">
-        </p>
-
+            aria-live="polite"
+        ></p>
     </section>
 
 </div>
 
 <style>
-/* =====================================================
-   PAINEL DE ACESSIBILIDADE
-===================================================== */
+/* ==========================================================
+   1. CONTAINER DO PAINEL
+========================================================== */
 
 #acessibilidadeContainer {
-    position: fixed;
-    right: 20px;
-    bottom: 20px;
-    z-index: 99999;
+    position: fixed !important;
+    top: auto !important;
+    left: auto !important;
+    right: 20px !important;
+    bottom: 20px !important;
+
+    z-index: 99999 !important;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+
+    width: 340px;
+    max-width: calc(100vw - 30px);
+
     font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
 }
+
+#acessibilidadeContainer * {
+    box-sizing: border-box;
+}
+
+/* ==========================================================
+   2. BOTÃO ABRIR ACESSIBILIDADE
+========================================================== */
 
 #abrirAcessibilidade {
-    background: #5265d8;
-    color: #ffffff;
-    border: 2px solid #ffffff;
-    border-radius: 12px;
-    padding: 14px 18px;
+    position: static !important;
+    transform: none !important;
+
+    display: block;
+    flex: 0 0 auto;
+
+    width: auto;
+    max-width: 100%;
+    min-height: 46px;
+
+    margin: 0 !important;
+    padding: 11px 17px;
+
+    background: #ffffff;
+    color: #202b50;
+
+    border: 2px solid #444444;
+    border-radius: 10px;
+
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 700;
+
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
 }
 
-#abrirAcessibilidade:hover {
-    background: #3548b5;
-}
+/* ==========================================================
+   3. PAINEL
+========================================================== */
 
 #painelAcessibilidade {
-    position: absolute;
-    right: 0;
-    bottom: 65px;
-    width: 300px;
-    max-width: calc(100vw - 24px);
-    max-height: 75vh;
+    position: static !important;
+    inset: auto !important;
+    transform: none !important;
+
+    width: 100%;
+    max-width: 100%;
+    max-height: 72vh;
+
     overflow-y: auto;
-    padding: 18px;
-    box-sizing: border-box;
+    overscroll-behavior: contain;
+
+    margin: 0 !important;
+    padding: 20px !important;
+
+    border: 2px solid #444444;
+    border-radius: 16px;
+
     background: #ffffff;
-    color: #202020;
-    border: 2px solid #5265d8;
-    border-radius: 14px;
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+    color: #222222;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+
+    flex-direction: column;
+    gap: 12px;
 }
 
 #painelAcessibilidade[hidden] {
     display: none !important;
 }
 
-#painelAcessibilidade h2 {
-    margin-top: 0;
-    font-size: 22px;
+/* Título */
+#tituloAcessibilidade {
+    margin: 0 !important;
+    color: #202b50;
+
+    font-size: 26px;
+    line-height: 1.3;
+    font-weight: 700;
 }
 
-#painelAcessibilidade p {
+/* Descrição */
+#painelAcessibilidade .descricaoAcessibilidade {
+    margin: 0 !important;
+    color: #292929;
+
+    font-size: 17px;
     line-height: 1.5;
 }
 
-.grupoAcessibilidade {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 10px;
+/* ==========================================================
+   4. BOTÕES SEPARADOS
+========================================================== */
+
+#painelAcessibilidade .botoesAcessibilidade {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch;
+
+    width: 100%;
+    gap: 12px !important;
+
+    margin: 0;
+    padding: 0;
 }
 
-#painelAcessibilidade button {
-    display: block;
-    width: 100%;
-    min-height: 44px;
-    margin-top: 8px;
-    padding: 11px;
-    background: #f1f3ff;
-    color: #202020;
-    border: 1px solid #5265d8;
-    border-radius: 8px;
+#painelAcessibilidade .botoesAcessibilidade button {
+    position: static !important;
+    inset: auto !important;
+    transform: none !important;
+
+    display: flex !important;
+    flex: 0 0 auto;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 100% !important;
+    min-width: 0;
+    min-height: 50px;
+    height: auto !important;
+
+    margin: 0 !important;
+    padding: 13px 12px !important;
+
+    border: 2px solid #5044e8;
+    border-radius: 10px;
+
+    background: #5044e8;
+    color: #ffffff;
+
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 15px;
+    font-weight: 700;
+    line-height: 1.4;
+    text-align: center;
+
+    white-space: normal;
+    overflow-wrap: anywhere;
+
     cursor: pointer;
 }
 
-#painelAcessibilidade button:hover {
-    background: #dfe4ff;
+#painelAcessibilidade #restaurar {
+    margin-top: 5px !important;
+    background: #343a58;
+    border-color: #343a58;
 }
 
-/* Foco visível para navegação pelo teclado */
+#painelAcessibilidade #fecharAcessibilidade {
+    margin-top: 2px !important;
+    background: #292929;
+    border-color: #292929;
+}
 
-#acessibilidadeContainer button:focus-visible {
-    outline: 3px solid #ffbf47;
+#painelAcessibilidade button:hover {
+    filter: brightness(0.88);
+}
+
+/* Foco de teclado */
+#abrirAcessibilidade:focus-visible,
+#painelAcessibilidade button:focus-visible {
+    outline: 3px solid #ffbf47 !important;
     outline-offset: 3px;
 }
 
-/* =====================================================
-   ALTO CONTRASTE
-===================================================== */
+/* Mensagem de retorno */
+#mensagemAcessibilidade {
+    margin: 0 !important;
+    padding: 0;
 
-body.alto-contraste {
+    color: #202b50;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* ==========================================================
+   5. ALTO CONTRASTE - CORREÇÃO PRINCIPAL
+   Fundo preto e textos claros em toda a página.
+========================================================== */
+
+html body.alto-contraste {
     background: #000000 !important;
+    background-image: none !important;
     color: #ffffff !important;
 }
 
-body.alto-contraste header,
-body.alto-contraste main,
-body.alto-contraste footer,
-body.alto-contraste nav,
-body.alto-contraste article,
-body.alto-contraste aside,
-body.alto-contraste .card,
-body.alto-contraste .question-card,
-body.alto-contraste .question-container,
-body.alto-contraste .alternativa {
+/* Remove fundos claros que poderiam esconder as letras.
+   Não altera o conteúdo de imagens e vídeos. */
+html body.alto-contraste *:not(img):not(video):not(iframe) {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+
     background-color: #000000 !important;
-    color: #ffffff !important;
+    background-image: none !important;
+
     border-color: #ffff00 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
 }
 
-body.alto-contraste h1,
-body.alto-contraste h2,
-body.alto-contraste h3,
-body.alto-contraste p,
-body.alto-contraste label,
-body.alto-contraste span {
-    color: #ffffff !important;
-}
-
-body.alto-contraste a {
+/* Links amarelos para ficarem fáceis de identificar */
+html body.alto-contraste a,
+html body.alto-contraste a *,
+html body.alto-contraste a:visited {
     color: #ffff00 !important;
+    -webkit-text-fill-color: #ffff00 !important;
+    text-decoration: underline !important;
 }
 
-body.alto-contraste button,
-body.alto-contraste input,
-body.alto-contraste select,
-body.alto-contraste textarea {
+/* Botões do site */
+html body.alto-contraste button,
+html body.alto-contraste input[type="button"],
+html body.alto-contraste input[type="submit"],
+html body.alto-contraste input[type="reset"],
+html body.alto-contraste .btn,
+html body.alto-contraste .botao {
     background: #000000 !important;
     color: #ffff00 !important;
+    -webkit-text-fill-color: #ffff00 !important;
+
     border: 2px solid #ffff00 !important;
 }
 
-body.alto-contraste #painelAcessibilidade {
+/* Garante a cor dos textos internos dos botões */
+html body.alto-contraste button *,
+html body.alto-contraste .btn *,
+html body.alto-contraste .botao * {
+    color: #ffff00 !important;
+    -webkit-text-fill-color: #ffff00 !important;
+}
+
+/* Campos de texto, login, cadastro e respostas */
+html body.alto-contraste input:not([type="checkbox"]):not([type="radio"]),
+html body.alto-contraste textarea,
+html body.alto-contraste select {
     background: #000000 !important;
     color: #ffffff !important;
-    border-color: #ffff00 !important;
+    -webkit-text-fill-color: #ffffff !important;
+
+    border: 2px solid #ffff00 !important;
+    caret-color: #ffff00 !important;
 }
 
-body.alto-contraste #painelAcessibilidade h2,
-body.alto-contraste #painelAcessibilidade p {
+/* Texto de orientação nos campos */
+html body.alto-contraste input::placeholder,
+html body.alto-contraste textarea::placeholder {
+    color: #dddddd !important;
+    -webkit-text-fill-color: #dddddd !important;
+    opacity: 1 !important;
+}
+
+/* Caixas de seleção */
+html body.alto-contraste input[type="checkbox"],
+html body.alto-contraste input[type="radio"] {
+    accent-color: #ffff00;
+}
+
+/* Foco bem visível para teclado */
+html body.alto-contraste a:focus-visible,
+html body.alto-contraste button:focus-visible,
+html body.alto-contraste input:focus-visible,
+html body.alto-contraste select:focus-visible,
+html body.alto-contraste textarea:focus-visible {
+    outline: 3px solid #00ffff !important;
+    outline-offset: 3px !important;
+}
+
+/* Painel de acessibilidade */
+html body.alto-contraste #painelAcessibilidade {
+    background: #000000 !important;
     color: #ffffff !important;
+    border: 3px solid #ffff00 !important;
 }
 
-/* =====================================================
-   REDUZIR ANIMAÇÕES
-===================================================== */
+html body.alto-contraste #tituloAcessibilidade,
+html body.alto-contraste #painelAcessibilidade .descricaoAcessibilidade,
+html body.alto-contraste #mensagemAcessibilidade {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
 
-body.sem-animacoes *,
-body.sem-animacoes *::before,
-body.sem-animacoes *::after {
+/* Botão de abrir */
+html body.alto-contraste #abrirAcessibilidade {
+    background: #000000 !important;
+    color: #ffff00 !important;
+    -webkit-text-fill-color: #ffff00 !important;
+    border: 2px solid #ffff00 !important;
+}
+
+/* Botões do painel */
+html body.alto-contraste #painelAcessibilidade .botoesAcessibilidade button {
+    background: #000000 !important;
+    color: #ffff00 !important;
+    -webkit-text-fill-color: #ffff00 !important;
+    border: 2px solid #ffff00 !important;
+}
+
+/* Ícones SVG */
+html body.alto-contraste svg {
+    color: #ffff00 !important;
+}
+
+/* ==========================================================
+   6. REDUZIR ANIMAÇÕES
+========================================================== */
+
+html.reduzir-animacoes *,
+html.reduzir-animacoes *::before,
+html.reduzir-animacoes *::after {
     animation: none !important;
     transition: none !important;
     scroll-behavior: auto !important;
 }
 
-/* =====================================================
-   RESPONSIVIDADE
-===================================================== */
+/* ==========================================================
+   7. RESPONSIVIDADE
+========================================================== */
 
 @media (max-width: 480px) {
     #acessibilidadeContainer {
-        right: 12px;
-        bottom: 12px;
+        right: 12px !important;
+        bottom: 12px !important;
+
+        width: 310px;
+        max-width: calc(100vw - 24px);
+        gap: 10px;
     }
 
     #painelAcessibilidade {
-        width: 280px;
-        max-width: calc(100vw - 24px);
+        padding: 16px !important;
+        max-height: 68vh;
     }
-}
 
-/* Respeita também a preferência de movimento do sistema */
+    #tituloAcessibilidade {
+        font-size: 23px;
+    }
 
-@media (prefers-reduced-motion: reduce) {
-    body:not(.animacoes-ativadas) *,
-    body:not(.animacoes-ativadas) *::before,
-    body:not(.animacoes-ativadas) *::after {
-        scroll-behavior: auto;
+    #painelAcessibilidade .descricaoAcessibilidade {
+        font-size: 16px;
+    }
+
+    #painelAcessibilidade .botoesAcessibilidade {
+        gap: 12px !important;
+    }
+
+    #painelAcessibilidade .botoesAcessibilidade button {
+        min-height: 48px;
+        padding: 12px 10px !important;
+        font-size: 14px;
     }
 }
 </style>
@@ -270,219 +456,201 @@ body.sem-animacoes *::after {
 (function () {
     "use strict";
 
-    const abrir = document.getElementById("abrirAcessibilidade");
-    const painel = document.getElementById("painelAcessibilidade");
-    const fechar = document.getElementById("fecharAcessibilidade");
+    const container = document.getElementById(
+        "acessibilidadeContainer"
+    );
 
-    const aumentar = document.getElementById("aumentarFonte");
-    const diminuir = document.getElementById("diminuirFonte");
-    const contraste = document.getElementById("contraste");
-    const animacoes = document.getElementById("animacoes");
-    const restaurar = document.getElementById("restaurar");
-    const mensagem = document.getElementById("mensagemAcessibilidade");
+    if (!container || container.dataset.inicializado === "true") {
+        return;
+    }
 
-    // Impede erros se o painel não estiver presente na página.
+    container.dataset.inicializado = "true";
+
+    const botaoAbrir = container.querySelector(
+        "#abrirAcessibilidade"
+    );
+
+    const painel = container.querySelector(
+        "#painelAcessibilidade"
+    );
+
+    const aumentar = container.querySelector("#aumentarFonte");
+    const diminuir = container.querySelector("#diminuirFonte");
+    const contraste = container.querySelector("#contraste");
+    const animacoes = container.querySelector("#animacoes");
+    const restaurar = container.querySelector("#restaurar");
+
+    const fechar = container.querySelector(
+        "#fecharAcessibilidade"
+    );
+
+    const mensagem = container.querySelector(
+        "#mensagemAcessibilidade"
+    );
+
     if (
-        !abrir || !painel || !fechar ||
-        !aumentar || !diminuir || !contraste ||
-        !animacoes || !restaurar || !mensagem
+        !botaoAbrir || !painel || !aumentar || !diminuir ||
+        !contraste || !animacoes || !restaurar || !fechar
     ) {
         return;
     }
 
-    const chavePreferencias = "mathplay_acessibilidade";
-
     let tamanhoFonte = 100;
-    let altoContraste = false;
-    let semAnimacoes = false;
 
-    function informar(texto) {
-        mensagem.textContent = texto;
+    const tamanhoMinimo = 80;
+    const tamanhoMaximo = 150;
+    const passoFonte = 10;
+
+    function anunciar(texto) {
+        if (mensagem) {
+            mensagem.textContent = texto;
+        }
     }
-
-    // Abrir e fechar o painel.
 
     function abrirPainel() {
         painel.hidden = false;
-        abrir.setAttribute("aria-expanded", "true");
-        aumentar.focus();
+
+        botaoAbrir.setAttribute(
+            "aria-expanded",
+            "true"
+        );
     }
 
-    function fecharPainel(devolverFoco = true) {
+    function fecharPainel() {
         painel.hidden = true;
-        abrir.setAttribute("aria-expanded", "false");
 
-        if (devolverFoco) {
-            abrir.focus();
-        }
+        botaoAbrir.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+
+        botaoAbrir.focus();
     }
 
-    abrir.addEventListener("click", function () {
+    // ABRIR E FECHAR
+    botaoAbrir.addEventListener("click", function () {
         if (painel.hidden) {
             abrirPainel();
         } else {
-            fecharPainel(false);
+            fecharPainel();
         }
     });
 
-    fechar.addEventListener("click", function () {
-        fecharPainel(true);
-    });
+    fechar.addEventListener("click", fecharPainel);
 
-    document.addEventListener("keydown", function (evento) {
-        if (evento.key === "Escape" && !painel.hidden) {
-            fecharPainel(true);
-        }
-    });
-
-    // Ajustar o tamanho do texto.
-
-    function aplicarFonte() {
-        document.documentElement.style.fontSize =
-            tamanhoFonte + "%";
-    }
-
+    // AUMENTAR TEXTO
     aumentar.addEventListener("click", function () {
-        tamanhoFonte = Math.min(tamanhoFonte + 10, 150);
-        aplicarFonte();
+        if (tamanhoFonte >= tamanhoMaximo) {
+            anunciar("O texto já está no tamanho máximo.");
+            return;
+        }
 
-        informar("Tamanho do texto: " + tamanhoFonte + "%.");
-        salvarPreferencias();
-    });
-
-    diminuir.addEventListener("click", function () {
-        tamanhoFonte = Math.max(tamanhoFonte - 10, 80);
-        aplicarFonte();
-
-        informar("Tamanho do texto: " + tamanhoFonte + "%.");
-        salvarPreferencias();
-    });
-
-    // Alto contraste.
-
-    function aplicarContraste() {
-        document.body.classList.toggle(
-            "alto-contraste",
-            altoContraste
+        tamanhoFonte = Math.min(
+            tamanhoFonte + passoFonte,
+            tamanhoMaximo
         );
 
-        contraste.setAttribute("aria-pressed", String(altoContraste));
+        document.documentElement.style.fontSize =
+            tamanhoFonte + "%";
 
-        contraste.textContent = altoContraste
+        anunciar("Tamanho do texto: " + tamanhoFonte + "%.");
+    });
+
+    // DIMINUIR TEXTO
+    diminuir.addEventListener("click", function () {
+        if (tamanhoFonte <= tamanhoMinimo) {
+            anunciar("O texto já está no tamanho mínimo.");
+            return;
+        }
+
+        tamanhoFonte = Math.max(
+            tamanhoFonte - passoFonte,
+            tamanhoMinimo
+        );
+
+        document.documentElement.style.fontSize =
+            tamanhoFonte + "%";
+
+        anunciar("Tamanho do texto: " + tamanhoFonte + "%.");
+    });
+
+    // ATIVAR E DESATIVAR ALTO CONTRASTE
+    contraste.addEventListener("click", function () {
+        const ativo = document.body.classList.toggle(
+            "alto-contraste"
+        );
+
+        contraste.setAttribute(
+            "aria-pressed",
+            String(ativo)
+        );
+
+        contraste.textContent = ativo
             ? "Desativar alto contraste"
             : "Ativar alto contraste";
-    }
 
-    contraste.addEventListener("click", function () {
-        altoContraste = !altoContraste;
-        aplicarContraste();
-
-        informar(
-            altoContraste
+        anunciar(
+            ativo
                 ? "Alto contraste ativado."
                 : "Alto contraste desativado."
         );
-
-        salvarPreferencias();
     });
 
-    // Redução de animações.
-
-    function aplicarAnimacoes() {
-        document.body.classList.toggle(
-            "sem-animacoes",
-            semAnimacoes
+    // REDUZIR ANIMAÇÕES
+    animacoes.addEventListener("click", function () {
+        const ativo = document.documentElement.classList.toggle(
+            "reduzir-animacoes"
         );
 
-        animacoes.setAttribute("aria-pressed", String(semAnimacoes));
+        animacoes.setAttribute(
+            "aria-pressed",
+            String(ativo)
+        );
 
-        animacoes.textContent = semAnimacoes
+        animacoes.textContent = ativo
             ? "Ativar animações"
             : "Reduzir animações";
-    }
 
-    animacoes.addEventListener("click", function () {
-        semAnimacoes = !semAnimacoes;
-        aplicarAnimacoes();
-
-        informar(
-            semAnimacoes
-                ? "Animações reduzidas."
-                : "Animações restauradas."
+        anunciar(
+            ativo
+                ? "Redução de animações ativada."
+                : "Redução de animações desativada."
         );
-
-        salvarPreferencias();
     });
 
-    // Guardar as preferências no navegador.
-
-    function salvarPreferencias() {
-        try {
-            localStorage.setItem(
-                chavePreferencias,
-                JSON.stringify({
-                    tamanhoFonte: tamanhoFonte,
-                    altoContraste: altoContraste,
-                    semAnimacoes: semAnimacoes
-                })
-            );
-        } catch (erro) {
-            // O painel continua funcionando sem armazenamento.
-        }
-    }
-
-    // Carregar as preferências guardadas.
-
-    function carregarPreferencias() {
-        try {
-            const salvas = localStorage.getItem(chavePreferencias);
-
-            if (salvas) {
-                const preferencias = JSON.parse(salvas);
-
-                if (
-                    Number.isFinite(preferencias.tamanhoFonte) &&
-                    preferencias.tamanhoFonte >= 80 &&
-                    preferencias.tamanhoFonte <= 150
-                ) {
-                    tamanhoFonte = preferencias.tamanhoFonte;
-                }
-
-                altoContraste = preferencias.altoContraste === true;
-                semAnimacoes = preferencias.semAnimacoes === true;
-            }
-        } catch (erro) {
-            tamanhoFonte = 100;
-            altoContraste = false;
-            semAnimacoes = false;
-        }
-
-        aplicarFonte();
-        aplicarContraste();
-        aplicarAnimacoes();
-    }
-
-    // Restaurar configurações iniciais.
-
+    // RESTAURAR CONFIGURAÇÕES
     restaurar.addEventListener("click", function () {
         tamanhoFonte = 100;
-        altoContraste = false;
-        semAnimacoes = false;
 
-        aplicarFonte();
-        aplicarContraste();
-        aplicarAnimacoes();
+        document.documentElement.style.fontSize = "";
 
-        try {
-            localStorage.removeItem(chavePreferencias);
-        } catch (erro) {
-            // Continua funcionando sem armazenamento.
-        }
+        document.body.classList.remove(
+            "alto-contraste"
+        );
 
-        informar("Configurações de acessibilidade restauradas.");
+        document.documentElement.classList.remove(
+            "reduzir-animacoes"
+        );
+
+        contraste.setAttribute("aria-pressed", "false");
+        contraste.textContent = "Ativar alto contraste";
+
+        animacoes.setAttribute("aria-pressed", "false");
+        animacoes.textContent = "Reduzir animações";
+
+        anunciar(
+            "Configurações de acessibilidade restauradas."
+        );
     });
 
-    carregarPreferencias();
-
+    // FECHAR COM ESC
+    document.addEventListener("keydown", function (evento) {
+        if (
+            evento.key === "Escape" &&
+            !painel.hidden
+        ) {
+            fecharPainel();
+        }
+    });
 })();
 </script>

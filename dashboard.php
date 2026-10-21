@@ -44,7 +44,7 @@ $dados = $usuario->buscarPorId(
 
     <header class="menu">
 
-        <h1>🎮 MathPlay</h1>
+        <h1>🎮 Estudaê</h1>
 
         <div>
 

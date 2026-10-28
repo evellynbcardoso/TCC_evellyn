@@ -14,12 +14,17 @@ jobs:
       - name: Baixar o código do repositório
         uses: actions/checkout@v4
 
-      - name: Substituir variaveis de ambiente no config.php
+      - name: Substituir credenciais do banco
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
         run: |
-          sed -i "s/__DB_HOST__/${{ secrets.DB_HOST }}/g" /classes/banco.php
-          sed -i "s/__DB_NAME__/${{ secrets.DB_NAME }}/g" /classes/banco.php
-          sed -i "s/__DB_USER__/${{ secrets.DB_USER }}/g" /classes/banco.php
-          sed -i "s/__DB_PASS__/${{ secrets.DB_PASS }}/g" /classes/banco.php
+          sed -i "s|private string \$host = .*;|private string \$host = \"$DB_HOST\";|" classes/banco.php
+          sed -i "s|private string \$banco = .*;|private string \$banco = \"$DB_NAME\";|" classes/banco.php
+          sed -i "s|private string \$usuario = .*;|private string \$usuario = \"$DB_USER\";|" classes/banco.php
+          sed -i "s|private string \$senha = .*;|private string \$senha = \"$DB_PASS\";|" classes/banco.php
 
       - name: Publicar via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5

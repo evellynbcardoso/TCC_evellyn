@@ -9,9 +9,9 @@ class Banco
 {
     // Dados do banco
     private string $porta = "3308";
-    private string $host = "b7_43252875";
-    private string $usuario = "sql300.byethost7.com";
-    private string $senha = "Senai@486";
+    private string $host = "";
+    private string $usuario = "";
+    private string $senha = "";
     private string $banco = "mathplay";
 
     // Conexão PDO

@@ -9,8 +9,8 @@ class Banco
 {
     // Dados do banco
     private string $porta = "3308";
-    private string $host = "";
-    private string $usuario = "";
+    private string $host = "Localhost";
+    private string $usuario = "root";
     private string $senha = "";
     private string $banco = "mathplay";
 
